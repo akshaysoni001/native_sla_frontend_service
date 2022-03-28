@@ -237,13 +237,13 @@
                 offset-x="12"
                 offset-y="8"
               >
-                <v-list-tile-avatar>
+                <v-list-item-avatar>
                   <v-avatar size="40">
                     <v-img
                       src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
                     ></v-img>
                   </v-avatar>
-                </v-list-tile-avatar>
+                </v-list-item-avatar>
               </v-badge>
               <v-list-item-content class="mx-2">
                 <v-list-item-title>AAE Ideapro</v-list-item-title>
@@ -264,13 +264,13 @@
                 offset-x="12"
                 offset-y="8"
               >
-                <v-list-tile-avatar>
+                <v-list-item-avatar>
                   <v-avatar size="40">
                     <v-img
                       src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
                     ></v-img>
                   </v-avatar>
-                </v-list-tile-avatar>
+                </v-list-item-avatar>
               </v-badge>
               <v-list-item-content class="mx-2">
                 <v-list-item-title>AAE Ideapro</v-list-item-title>
@@ -291,13 +291,13 @@
                 offset-x="12"
                 offset-y="8"
               >
-                <v-list-tile-avatar>
+                <v-list-item-avatar>
                   <v-avatar size="40">
                     <v-img
                       src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
                     ></v-img>
                   </v-avatar>
-                </v-list-tile-avatar>
+                </v-list-item-avatar>
               </v-badge>
               <v-list-item-content class="mx-2">
                 <v-list-item-title>AAE Ideapro</v-list-item-title>

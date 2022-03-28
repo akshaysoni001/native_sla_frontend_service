@@ -23,7 +23,7 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                New Item
+                Add Sla
               </v-btn>
             </template>
             <v-card>
@@ -80,7 +80,7 @@
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5"
-                >Are you sure you want to delete this item?</v-card-title
+                >Are you sure you want to delete this SLA?</v-card-title
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -145,7 +145,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+      return this.editedIndex === -1 ? "Add SLA" : "Edit SLA";
     },
   },
 
