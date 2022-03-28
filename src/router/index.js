@@ -1,14 +1,38 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import LoginView from "../views/LoginView.vue";
 import HomeView from "../views/HomeView.vue";
+import ServiceView from "../views/ServiceRequestView.vue";
+import SlaDataView from "../views/SlaData.vue";
+import ContactView from "../views/ContactView.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "home",
+    name: "LoginLogout",
+    component: LoginView,
+  },
+  {
+    path: "/home",
+    name: "HomeView",
     component: HomeView,
+  },
+  {
+    path: "/service",
+    name: "ServiceRequest",
+    component: ServiceView,
+  },
+  {
+    path: "/data",
+    name: "sladata",
+    component: SlaDataView,
+  },
+  {
+    path: "/contact",
+    name: "contact",
+    component: ContactView,
   },
   {
     path: "/about",
