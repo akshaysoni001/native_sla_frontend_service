@@ -1,59 +1,14 @@
 <template>
   <v-container class="ma-5">
     <v-toolbar flat color="teal--text">
-      <v-toolbar-title color=""> Contact Us </v-toolbar-title>
+      <v-toolbar-title color=""> SLA Download </v-toolbar-title>
       <v-divider class="mx-4" inset vertical></v-divider>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <v-row class="justify-center ma-3">
+    <v-row left class="ma-3">
       <v-col cols="12" sm="6" class="ma-2 white">
         <validation-observer ref="observer" v-slot="{ invalid }">
           <form @submit.prevent="submit">
-            <validation-provider
-              v-slot="{ errors }"
-              name="Name"
-              rules="required|max:10"
-            >
-              <v-text-field
-                v-model="name"
-                :counter="10"
-                :error-messages="errors"
-                label="Name"
-                prepend-icon="person"
-                required
-              ></v-text-field>
-            </validation-provider>
-            <validation-provider
-              v-slot="{ errors }"
-              name="phoneNumber"
-              :rules="{
-                required: true,
-                digits: 7,
-                regex: '^(71|72|74|76|81|82|84|85|86|87|88|89)\\d{5}$',
-              }"
-            >
-              <v-text-field
-                v-model="phoneNumber"
-                :counter="7"
-                :error-messages="errors"
-                label="Phone Number"
-                prepend-icon="phone"
-                required
-              ></v-text-field>
-            </validation-provider>
-            <validation-provider
-              v-slot="{ errors }"
-              name="email"
-              rules="required|email"
-            >
-              <v-text-field
-                v-model="email"
-                :error-messages="errors"
-                label="E-mail"
-                prepend-icon="email"
-                required
-              ></v-text-field>
-            </validation-provider>
             <validation-provider
               v-slot="{ errors }"
               name="select"
@@ -63,7 +18,7 @@
                 v-model="select"
                 :items="items"
                 :error-messages="errors"
-                label="Select"
+                label="SLA"
                 data-vv-name="select"
                 prepend-icon="menu"
                 required
@@ -71,19 +26,72 @@
             </validation-provider>
             <validation-provider
               v-slot="{ errors }"
+              name="date"
               rules="required"
-              name="textarea"
-            >
-              <v-textarea
-                v-model="textarea"
-                :error-messages="errors"
-                value="1"
-                label="Message"
-                prepend-icon="message"
-                type="textarea"
-                required
-              ></v-textarea>
-            </validation-provider>
+              ><v-row>
+                <v-col cols="12" lg="6">
+                  <v-menu
+                    v-model="menu1"
+                    :close-on-content-click="false"
+                    max-width="290"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        :value="computedDateFormattedMomentjs"
+                        clearable
+                        label="From"
+                        prepend-icon="event"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        :error-messages="errors"
+                        required
+                        @click:clear="date = null"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="fromDate"
+                      @change="menu1 = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" lg="6">
+                  <v-menu
+                    v-model="menu2"
+                    :close-on-content-click="false"
+                    max-width="290"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        :value="computedDateFormattedDatefns"
+                        clearable
+                        label="To"
+                        prepend-icon="event"
+                        readonly
+                        required
+                        v-bind="attrs"
+                        v-on="on"
+                        @click:clear="date = null"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="toDate"
+                      @change="menu2 = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col> </v-row
+            ></validation-provider>
+            <validation-provider>
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-switch v-model="switch1" label="Download"></v-switch>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-switch
+                    v-model="switch2"
+                    label="Need on mail"
+                  ></v-switch> </v-col></v-row
+            ></validation-provider>
 
             <v-btn class="mr-4" type="submit" :disabled="invalid">
               submit
@@ -97,6 +105,8 @@
 </template>
 
 <script>
+import moment from "moment";
+import { format, parseISO } from "date-fns";
 import { required, digits, email, max, regex } from "vee-validate/dist/rules";
 import {
   extend,
@@ -138,25 +148,55 @@ export default {
     ValidationObserver,
   },
   data: () => ({
-    name: "",
-    phoneNumber: "",
-    email: "",
+    fromDate: null,
+    toDate: null,
+    menu1: false,
+    menu2: false,
     select: null,
     items: ["Item 1", "Item 2", "Item 3", "Item 4"],
-    textarea: "",
+    switch1: true,
+    switch2: false,
   }),
+  watch: {
+    switch1(value) {
+      if (value) {
+        this.switch2 = false;
+      } else {
+        this.switch2 = true;
+      }
+    },
+    switch2(value) {
+      if (value) {
+        this.switch1 = false;
+      } else {
+        this.switch1 = true;
+      }
+    },
+  },
 
   methods: {
     submit() {
       this.$refs.observer.validate();
     },
     clear() {
-      this.name = "";
-      this.phoneNumber = "";
-      this.email = "";
+      this.fromDate = null;
+      this.toDate = null;
       this.select = null;
-      this.textarea = "";
+      this.switch1 = true;
+      this.switch2 = false;
       this.$refs.observer.reset();
+    },
+  },
+  computed: {
+    computedDateFormattedMomentjs() {
+      return this.fromDate
+        ? moment(this.fromDate).format("dddd, MMMM Do YYYY")
+        : "";
+    },
+    computedDateFormattedDatefns() {
+      return this.toDate
+        ? format(parseISO(this.toDate), "EEEE, MMMM do yyyy")
+        : "";
     },
   },
 };

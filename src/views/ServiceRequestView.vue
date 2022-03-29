@@ -1,10 +1,11 @@
 <template>
   <v-container class="ma-5">
     <v-data-table
-      :headers="headers"
+      :headers="Computedheaders"
       :items="desserts"
       sort-by="calories"
       class="elevation-1"
+      :search="search"
     >
       <template v-slot:top>
         <v-toolbar flat>
@@ -18,8 +19,7 @@
             :color="chip.color"
             dark
             class="mx-2 mb-2"
-            v-bind="attrs"
-            v-on="on"
+            @click="filter(chip.status)"
             >{{ chip.status }}
           </v-chip>
           <v-dialog v-model="dialog" max-width="500px">
@@ -109,20 +109,21 @@
 export default {
   data: () => ({
     dialog: false,
-    dialogDelete: false,
+    search: "Open",
     headers: [
       {
         text: "Dessert (100g serving)",
         align: "start",
         sortable: false,
         value: "name",
+        show: true,
       },
-      { text: "Calories", value: "calories" },
-      { text: "Fat (g)", value: "fat" },
-      { text: "Carbs (g)", value: "carbs" },
-      { text: "Protein (g)", value: "protein" },
-      { text: "Status", value: "status" },
-      { text: "Actions", value: "actions", sortable: false },
+      { text: "Calories", value: "calories", show: true },
+      { text: "Fat (g)", value: "fat", show: true },
+      { text: "Carbs (g)", value: "carbs", show: true },
+      { text: "Protein (g)", value: "protein", show: true },
+      { text: "Status", value: "status", show: true },
+      { text: "Actions", value: "actions", sortable: false, show: false },
     ],
     status: [
       {
@@ -159,6 +160,13 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "Approve Request" : "Delete Request";
     },
+    Computedheaders() {
+      if (this.search != "Pending") {
+        return this.headers.filter((x) => x.show);
+      } else {
+        return this.headers;
+      }
+    },
   },
 
   watch: {
@@ -175,9 +183,17 @@ export default {
   },
 
   methods: {
+    filter(value) {
+      if (value == "Closed") {
+        this.search = "Approve";
+      } else {
+        this.search = value;
+      }
+    },
     getColor(status) {
       if (status == "Open") return "blue";
       else if (status == "Approve") return "success";
+      else if (status == "Pending") return "orange";
       else return "red";
     },
     initialize() {
@@ -220,7 +236,7 @@ export default {
           fat: 16.0,
           carbs: 49,
           protein: 3.9,
-          status: "Reject",
+          status: "Pending",
         },
         {
           name: "Jelly bean",

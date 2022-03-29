@@ -39,10 +39,10 @@ export default {
         { icon: "fas fa-chart-line", route: "/home" },
         { icon: "fas fa-th-large", route: "/data" },
         { icon: "fas fa-align-center", route: "/service" },
-        { icon: "fas fa-gitter", route: "/contact" },
-        { icon: "fas fa-hand", route: "/contact1" },
         { icon: "fas fa-download", route: "/download" },
-        { icon: "fas fa-users", route: "/c" },
+        { icon: "fas fa-hand", route: "/request" },
+        { icon: "fas fa-gitter", route: "/contact" },
+        { icon: "fas fa-users", route: "/about" },
       ],
     };
   },

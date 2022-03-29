@@ -6,7 +6,7 @@ import ServiceView from "../views/ServiceRequestView.vue";
 import SlaDataView from "../views/SlaData.vue";
 import ContactView from "../views/ContactView.vue";
 import DownloadView from "../views/SlaDownload.vue";
-
+import RequestView from "../views/RequestView.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -39,6 +39,11 @@ const routes = [
     path: "/download",
     name: "download",
     component: DownloadView,
+  },
+  {
+    path: "/request",
+    name: "request",
+    component: RequestView,
   },
   {
     path: "/about",

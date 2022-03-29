@@ -70,13 +70,13 @@ export default {
           color: "green",
           icon: "fas fa-mobile",
           subtitle: "Design",
-          title: "Mobile Onboarding",
+          title: "Mobile",
         },
         {
           color: "red",
           icon: "fas fa-mobile",
           subtitle: "Design",
-          title: "Mobile Onboarding",
+          title: "App Onboarding",
         },
         {
           color: "blue",
@@ -88,7 +88,7 @@ export default {
           color: "pink",
           icon: "fas fa-mobile",
           subtitle: "Design",
-          title: "Mobile Onboarding",
+          title: "Data Onboarding",
         },
       ],
     };

@@ -1,59 +1,21 @@
 <template>
   <v-container class="ma-5">
-    <v-toolbar flat color="teal--text">
-      <v-toolbar-title color=""> Contact Us </v-toolbar-title>
+    <v-toolbar
+      color="#49D9A0"
+      elevation="12"
+      outlined
+      shaped
+      width="200"
+      class="mx-5"
+    >
+      <v-app-bar-title> Raise Request </v-app-bar-title>
       <v-divider class="mx-4" inset vertical></v-divider>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <v-row left class="ma-3">
-      <v-col cols="12" sm="6" class="ma-2 white">
+    <v-row class="left ma-3">
+      <v-col cols="12" sm="6" class="ma-2 white" outlined>
         <validation-observer ref="observer" v-slot="{ invalid }">
           <form @submit.prevent="submit">
-            <validation-provider
-              v-slot="{ errors }"
-              name="Name"
-              rules="required|max:10"
-            >
-              <v-text-field
-                v-model="name"
-                :counter="10"
-                :error-messages="errors"
-                label="Name"
-                prepend-icon="person"
-                required
-              ></v-text-field>
-            </validation-provider>
-            <validation-provider
-              v-slot="{ errors }"
-              name="phoneNumber"
-              :rules="{
-                required: true,
-                digits: 10,
-                regex: '^(71|72|74|76|81|82|84|85|86|87|88|89||99)\\d{5}$',
-              }"
-            >
-              <v-text-field
-                v-model="phoneNumber"
-                :counter="10"
-                :error-messages="errors"
-                label="Phone Number"
-                prepend-icon="phone"
-                required
-              ></v-text-field>
-            </validation-provider>
-            <validation-provider
-              v-slot="{ errors }"
-              name="email"
-              rules="required|email"
-            >
-              <v-text-field
-                v-model="email"
-                :error-messages="errors"
-                label="E-mail"
-                prepend-icon="email"
-                required
-              ></v-text-field>
-            </validation-provider>
             <validation-provider
               v-slot="{ errors }"
               name="select"
@@ -63,8 +25,40 @@
                 v-model="select"
                 :items="items"
                 :error-messages="errors"
-                label="Select"
+                label="Request"
                 data-vv-name="select"
+                prepend-icon="menu"
+                required
+              ></v-select>
+            </validation-provider>
+            <validation-provider
+              v-slot="{ errors }"
+              name="account"
+              rules="required"
+            >
+              <v-select
+                v-model="add_account"
+                v-if="add_account"
+                :items="items"
+                :error-messages="errors"
+                label="Select Account"
+                data-vv-name="account"
+                prepend-icon="menu"
+                required
+              ></v-select>
+            </validation-provider>
+            <validation-provider
+              v-slot="{ errors }"
+              name="access"
+              rules="required"
+            >
+              <v-select
+                v-model="select"
+                v-if="access"
+                :items="items"
+                :error-messages="errors"
+                label="Select Rights"
+                data-vv-name="rights"
                 prepend-icon="menu"
                 required
               ></v-select>
@@ -84,7 +78,6 @@
                 required
               ></v-textarea>
             </validation-provider>
-
             <v-btn class="mr-4" type="submit" :disabled="invalid">
               submit
             </v-btn>
@@ -138,24 +131,39 @@ export default {
     ValidationObserver,
   },
   data: () => ({
-    name: "",
-    phoneNumber: "",
-    email: "",
+    fromDate: null,
+    toDate: null,
+    add_account: null,
+    access: null,
+    menu1: false,
+    menu2: false,
     select: null,
+    textarea: null,
     items: ["Item 1", "Item 2", "Item 3", "Item 4"],
-    textarea: "",
   }),
+  watch: {
+    select(value) {
+      if (value == "Item 1") {
+        this.add_account = true;
+        this.access = false;
+      } else if (value == "Item 2") {
+        this.access = true;
+        this.add_account = false;
+      } else {
+        this.add_account = false;
+        this.access = false;
+      }
+    },
+  },
 
   methods: {
     submit() {
       this.$refs.observer.validate();
     },
     clear() {
-      this.name = "";
-      this.phoneNumber = "";
-      this.email = "";
+      this.fromDate = null;
+      this.toDate = null;
       this.select = null;
-      this.textarea = "";
       this.$refs.observer.reset();
     },
   },

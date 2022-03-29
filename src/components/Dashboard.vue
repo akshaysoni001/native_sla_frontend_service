@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <SideBarRight />
-    <v-toolbar color="rgba(0,0,0,0)" flat class="mt4-n4">
+    <v-toolbar color="rgba(0,0,0,0)" flat class="mt-n4">
       <v-btn-toggle tile group v-model="toggle_exclusive" color="#49D9A0">
         <v-btn><v-icon>fas fa-arrow-left</v-icon></v-btn>
         <v-btn><v-icon>fas fa-arrow-right</v-icon></v-btn>
