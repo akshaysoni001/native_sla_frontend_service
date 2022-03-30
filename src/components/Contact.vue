@@ -15,7 +15,7 @@
               rules="required|max:10"
             >
               <v-text-field
-                v-model="name"
+                v-model="formData.name"
                 :counter="10"
                 :error-messages="errors"
                 label="Name"
@@ -29,11 +29,11 @@
               :rules="{
                 required: true,
                 digits: 10,
-                regex: '^(71|72|74|76|81|82|84|85|86|87|88|89||99)\\d{5}$',
+                regex: '^(71|72|74|76|81|82|84|85|86|87|88|89)\\d{8}$',
               }"
             >
               <v-text-field
-                v-model="phoneNumber"
+                v-model="formData.phoneNumber"
                 :counter="10"
                 :error-messages="errors"
                 label="Phone Number"
@@ -47,7 +47,7 @@
               rules="required|email"
             >
               <v-text-field
-                v-model="email"
+                v-model="formData.email"
                 :error-messages="errors"
                 label="E-mail"
                 prepend-icon="email"
@@ -56,15 +56,15 @@
             </validation-provider>
             <validation-provider
               v-slot="{ errors }"
-              name="select"
+              name="service"
               rules="required"
             >
               <v-select
-                v-model="select"
-                :items="items"
+                v-model="formData.service"
+                :items="formData.services"
                 :error-messages="errors"
-                label="Select"
-                data-vv-name="select"
+                label="Service"
+                data-vv-name="service"
                 prepend-icon="menu"
                 required
               ></v-select>
@@ -75,7 +75,7 @@
               name="textarea"
             >
               <v-textarea
-                v-model="textarea"
+                v-model="formData.message"
                 :error-messages="errors"
                 value="1"
                 label="Message"
@@ -97,6 +97,7 @@
 </template>
 
 <script>
+import event from "@/services/ApiCalls.js";
 import { required, digits, email, max, regex } from "vee-validate/dist/rules";
 import {
   extend,
@@ -138,24 +139,36 @@ export default {
     ValidationObserver,
   },
   data: () => ({
-    name: "",
-    phoneNumber: "",
-    email: "",
-    select: null,
-    items: ["Item 1", "Item 2", "Item 3", "Item 4"],
-    textarea: "",
+    message: "",
+    formData: {
+      name: "",
+      phoneNumber: "",
+      email: "",
+      select: null,
+      services: ["Item 1", "Item 2", "Item 3", "Item 4"],
+      message: "",
+    },
   }),
 
   methods: {
     submit() {
       this.$refs.observer.validate();
+      event
+        .post_feedback(this.formData)
+        .then((response) => {
+          this.message = response.data.message;
+          this.clear();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     clear() {
-      this.name = "";
-      this.phoneNumber = "";
-      this.email = "";
-      this.select = null;
-      this.textarea = "";
+      this.formData.name = "";
+      this.formData.phoneNumber = "";
+      this.formData.email = "";
+      this.formData.service = null;
+      this.formData.message = "";
       this.$refs.observer.reset();
     },
   },

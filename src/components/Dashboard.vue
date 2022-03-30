@@ -10,7 +10,7 @@
       <v-btn color="#49D9A0" rounded dark>finish Sprint</v-btn>
     </v-toolbar>
     <v-toolbar color="rgba(0,0,0,0)" flat class="mt-n5">
-      <v-toolbar-title>Sprint Overview </v-toolbar-title>
+      <v-toolbar-title>SLA Overview </v-toolbar-title>
       <v-btn color="#49D9A0" text class="ml-5">last sprint</v-btn>
     </v-toolbar>
 
@@ -37,7 +37,7 @@
                         </div>
                         <v-list-item-sub-title
                           :class="active ? 'white--text' : 'black--text'"
-                          >Team Velocity</v-list-item-sub-title
+                          >Total Applications</v-list-item-sub-title
                         >
                         <v-list-item-title
                           class="headline mb-1"
@@ -72,7 +72,7 @@
                         </div>
                         <v-list-item-sub-title
                           :class="active ? 'white--text' : 'black--text'"
-                          >Team Velocity</v-list-item-sub-title
+                          >Total SLA's</v-list-item-sub-title
                         >
                         <v-list-item-title
                           class="headline mb-1"
@@ -107,7 +107,7 @@
                         </div>
                         <v-list-item-sub-title
                           :class="active ? 'white--text' : 'black--text'"
-                          >Team Velocity</v-list-item-sub-title
+                          >Sla Met</v-list-item-sub-title
                         >
                         <v-list-item-title
                           class="headline mb-1"
@@ -142,7 +142,7 @@
                         </div>
                         <v-list-item-sub-title
                           :class="active ? 'white--text' : 'black--text'"
-                          >Team Velocity</v-list-item-sub-title
+                          >Sla Breached</v-list-item-sub-title
                         >
                         <v-list-item-title
                           class="headline mb-1"
@@ -177,7 +177,7 @@
                         </div>
                         <v-list-item-sub-title
                           :class="active ? 'white--text' : 'black--text'"
-                          >Team Velocity</v-list-item-sub-title
+                          >Top Application</v-list-item-sub-title
                         >
                         <v-list-item-title
                           class="headline mb-1"

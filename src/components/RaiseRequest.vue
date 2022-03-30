@@ -23,7 +23,7 @@
             >
               <v-select
                 v-model="select"
-                :items="items"
+                :items="services"
                 :error-messages="errors"
                 label="Request"
                 data-vv-name="select"
@@ -90,6 +90,7 @@
 </template>
 
 <script>
+import event from "@/services/ApiCalls.js";
 import { required, digits, email, max, regex } from "vee-validate/dist/rules";
 import {
   extend,
@@ -139,14 +140,16 @@ export default {
     menu2: false,
     select: null,
     textarea: null,
-    items: ["Item 1", "Item 2", "Item 3", "Item 4"],
+    services: ["Add Account", "Account Upgrade"],
+    all_accounts: [],
+    all_rights: [],
   }),
   watch: {
     select(value) {
-      if (value == "Item 1") {
+      if (value == "Add Account") {
         this.add_account = true;
         this.access = false;
-      } else if (value == "Item 2") {
+      } else if (value == "Account Upgrade") {
         this.access = true;
         this.add_account = false;
       } else {
@@ -155,7 +158,16 @@ export default {
       }
     },
   },
-
+  created() {
+    event
+      .get_access()
+      .then((response) => {
+        this.services = response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
   methods: {
     submit() {
       this.$refs.observer.validate();

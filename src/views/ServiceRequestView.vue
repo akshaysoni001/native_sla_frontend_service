@@ -2,8 +2,8 @@
   <v-container class="ma-5">
     <v-data-table
       :headers="Computedheaders"
-      :items="desserts"
-      sort-by="calories"
+      :items="requests"
+      sort-by="account"
       class="elevation-1"
       :search="search"
     >
@@ -33,36 +33,36 @@
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.name"
-                        label="Dessert name"
+                        v-model="editedItem.account"
+                        label="Account"
                         readonly
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.calories"
-                        label="Calories"
+                        v-model="editedItem.activity"
+                        label="Activity"
                         readonly
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.fat"
-                        label="Fat (g)"
+                        v-model="editedItem.dynamic_information"
+                        label="Request"
                         readonly
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.carbs"
-                        label="Carbs (g)"
+                        v-model="editedItem.status"
+                        label="Status"
                         readonly
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.protein"
-                        label="Protein (g)"
+                        v-model="editedItem.user_id"
+                        label="User"
                         readonly
                       ></v-text-field>
                     </v-col>
@@ -87,6 +87,16 @@
           </v-dialog>
         </v-toolbar>
       </template>
+
+      <template v-slot:[`item.dynamic_information`]="{ item }">
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-chip dark v-on="on">{{ "New Data Info" }}</v-chip>
+          </template>
+          <span>{{ item.dynamic_information }}</span>
+        </v-tooltip>
+      </template>
+
       <template v-slot:[`item.status`]="{ item }">
         <v-chip :color="getColor(item.status)" dark>
           {{ item.status }}
@@ -98,30 +108,28 @@
         </v-icon>
         <v-icon medium @click="deleteItem(item)" color="red"> close </v-icon>
       </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize"> Reset </v-btn>
-      </template>
     </v-data-table>
   </v-container>
 </template>
 
 <script>
+import event from "@/services/ApiCalls.js";
 export default {
   data: () => ({
     dialog: false,
     search: "Open",
     headers: [
+      { text: "User", value: "user_id", show: true },
       {
-        text: "Dessert (100g serving)",
+        text: "Account",
         align: "start",
         sortable: false,
-        value: "name",
+        value: "account",
         show: true,
       },
-      { text: "Calories", value: "calories", show: true },
-      { text: "Fat (g)", value: "fat", show: true },
-      { text: "Carbs (g)", value: "carbs", show: true },
-      { text: "Protein (g)", value: "protein", show: true },
+      { text: "Activity", value: "activity", show: true },
+      { text: "Request", value: "dynamic_information", show: true },
+      { text: "Remark", value: "remark", show: true },
       { text: "Status", value: "status", show: true },
       { text: "Actions", value: "actions", sortable: false, show: false },
     ],
@@ -139,7 +147,7 @@ export default {
         color: "orange",
       },
     ],
-    desserts: [],
+    requests: [],
     editedIndex: -1,
     editedItem: {
       name: "",
@@ -160,6 +168,9 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "Approve Request" : "Delete Request";
     },
+    action() {
+      return this.editedIndex === -1 ? "approve" : "reject";
+    },
     Computedheaders() {
       if (this.search != "Pending") {
         return this.headers.filter((x) => x.show);
@@ -177,106 +188,32 @@ export default {
       val || this.closeDelete();
     },
   },
-
   created() {
-    this.initialize();
+    event
+      .get_request_data()
+      .then((response) => {
+        this.requests = response.data.data;
+        console.log(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 
   methods: {
     filter(value) {
       if (value == "Closed") {
-        this.search = "Approve";
+        this.search = "ed";
       } else {
         this.search = value;
       }
     },
     getColor(status) {
       if (status == "Open") return "blue";
-      else if (status == "Approve") return "success";
+      else if (status == "Approved") return "success";
       else if (status == "Pending") return "orange";
       else return "red";
     },
-    initialize() {
-      this.desserts = [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          status: "Open",
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          status: "Open",
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          status: "Approve",
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          status: "Approve",
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          status: "Pending",
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          status: "Approve",
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-      ];
-    },
-
     editItem(item) {
       this.editedIndex = -1;
       this.editedItem = Object.assign({}, item);
@@ -296,6 +233,7 @@ export default {
 
     close() {
       this.dialog = false;
+      this.action = null;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -311,11 +249,17 @@ export default {
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      } else {
-        this.desserts.push(this.editedItem);
-      }
+      this.editedItem["action"] = this.action;
+      console.log("Data", this.editedItem);
+      event
+        .make_action(this.editedItem)
+        .then((response) => {
+          console.log(response);
+          this.message = response.message;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       this.close();
     },
   },

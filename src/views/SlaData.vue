@@ -2,7 +2,7 @@
   <v-container class="ma-5">
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="slas"
       sort-by="calories"
       class="elevation-1"
     >
@@ -36,36 +36,36 @@
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.name"
-                        label="Dessert name"
+                        v-model="editedItem.account"
+                        label="Account"
                         :readonly="readonly"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.calories"
-                        label="Calories"
+                        v-model="editedItem.application"
+                        label="Application"
                         :readonly="readonly"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.fat"
-                        label="Fat (g)"
+                        v-model="editedItem.sla_number"
+                        label="SLA Number"
                         :readonly="readonly"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.carbs"
-                        label="Carbs (g)"
+                        v-model="editedItem.sla_type"
+                        label="SLA Type"
                         :readonly="readonly"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.protein"
-                        label="Protein (g)"
+                        v-model="editedItem.target"
+                        label="Target"
                         :readonly="readonly"
                       ></v-text-field>
                     </v-col>
@@ -94,48 +94,61 @@
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize"> Reset </v-btn>
-      </template>
     </v-data-table>
   </v-container>
 </template>
 
 <script>
+import event from "@/services/ApiCalls.js";
 export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
     readonly: false,
     action: "Add SLA",
+    request: "add",
     headers: [
       {
-        text: "Dessert (100g serving)",
+        text: "Id",
         align: "start",
         sortable: false,
-        value: "name",
+        value: "id",
       },
-      { text: "Calories", value: "calories" },
-      { text: "Fat (g)", value: "fat" },
-      { text: "Carbs (g)", value: "carbs" },
-      { text: "Protein (g)", value: "protein" },
+      {
+        text: "Creation Date",
+        align: "start",
+        sortable: false,
+        value: "creation_date",
+      },
+      {
+        text: "Account",
+        align: "start",
+        sortable: false,
+        value: "account",
+      },
+      { text: "Application", value: "application" },
+      { text: "SLA Number", value: "sla_number" },
+      { text: "SLA Type", value: "sla_type" },
+      { text: "Target", value: "target" },
       { text: "Actions", value: "actions", sortable: false },
     ],
-    desserts: [],
+    slas: [],
     editedIndex: -1,
     editedItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      account: "",
+      application: 0,
+      sla_number: 0,
+      sla_type: 0,
+      target: 0,
+      remark: "",
     },
     defaultItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      account: "",
+      application: 0,
+      sla_number: 0,
+      sla_type: 0,
+      target: 0,
+      remark: "",
     },
   }),
 
@@ -155,102 +168,36 @@ export default {
   },
 
   created() {
-    this.initialize();
+    event
+      .get_sla_data()
+      .then((response) => {
+        this.slas = response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 
   methods: {
-    initialize() {
-      this.desserts = [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-      ];
-    },
-
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = this.slas.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
       this.action = "Edit SLA";
+      this.request = "update";
     },
 
     deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = this.slas.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
       this.readonly = true;
       this.action = "Delete SLA";
+      this.request = "delete";
     },
 
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
+      this.slas.splice(this.editedIndex, 1);
       this.closeDelete();
     },
 
@@ -258,6 +205,7 @@ export default {
       this.dialog = false;
       this.readonly = false;
       this.action = "Add SLA";
+      this.request = "add";
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -273,11 +221,17 @@ export default {
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      } else {
-        this.desserts.push(this.editedItem);
-      }
+      this.editedItem["request"] = this.request;
+      console.log("Data", this.editedItem);
+      event
+        .post_sla_request(this.editedItem)
+        .then((response) => {
+          console.log(response);
+          this.message = response.message;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       this.close();
     },
   },

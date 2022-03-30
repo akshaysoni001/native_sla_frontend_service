@@ -19,7 +19,7 @@
                 :items="items"
                 :error-messages="errors"
                 label="SLA"
-                data-vv-name="select"
+                data-vv-name="items"
                 prepend-icon="menu"
                 required
               ></v-select>
@@ -105,6 +105,7 @@
 </template>
 
 <script>
+import event from "@/services/ApiCalls.js";
 import moment from "moment";
 import { format, parseISO } from "date-fns";
 import { required, digits, email, max, regex } from "vee-validate/dist/rules";
@@ -153,10 +154,21 @@ export default {
     menu1: false,
     menu2: false,
     select: null,
-    items: ["Item 1", "Item 2", "Item 3", "Item 4"],
+    items: null,
     switch1: true,
     switch2: false,
   }),
+  created() {
+    event
+      .get_sla_headers()
+      .then((response) => {
+        this.items = response.data.data;
+        console.log(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
   watch: {
     switch1(value) {
       if (value) {
