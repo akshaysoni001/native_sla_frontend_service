@@ -167,8 +167,8 @@ export default {
       this.formData.name = "";
       this.formData.phoneNumber = "";
       this.formData.email = "";
-      this.formData.service = null;
-      this.formData.message = "";
+      this.formData.select = null;
+      this.formData.textarea = "";
       this.$refs.observer.reset();
     },
   },

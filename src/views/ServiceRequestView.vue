@@ -45,7 +45,7 @@
                         readonly
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="12" sm="12" md="12">
                       <v-text-field
                         v-model="editedItem.dynamic_information"
                         label="Request"
@@ -70,6 +70,8 @@
                       <v-text-field
                         v-model="editedItem.remark"
                         label="Remark"
+                        ref="remark"
+                        :rules="Rules"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -118,6 +120,7 @@ export default {
   data: () => ({
     dialog: false,
     search: "Open",
+    Rules: [(v) => !!v || "Required"],
     headers: [
       { text: "User", value: "user_id", show: true },
       {
@@ -232,6 +235,7 @@ export default {
     },
 
     close() {
+      this.$refs.remark.reset();
       this.dialog = false;
       this.action = null;
       this.$nextTick(() => {
@@ -249,18 +253,21 @@ export default {
     },
 
     save() {
-      this.editedItem["action"] = this.action;
-      console.log("Data", this.editedItem);
-      event
-        .make_action(this.editedItem)
-        .then((response) => {
-          console.log(response);
-          this.message = response.message;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      this.close();
+      if (this.$refs.remark.validate()) {
+        this.editedItem["action"] = this.action;
+        console.log("Data", this.editedItem);
+        event
+          .make_action(this.editedItem)
+          .then((response) => {
+            console.log(response);
+            this.message = response.message;
+            this.$refs.remark.reset();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        this.close();
+      }
     },
   },
 };

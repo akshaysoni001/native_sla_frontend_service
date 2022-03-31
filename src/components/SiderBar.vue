@@ -36,7 +36,7 @@ export default {
       selectedItem: 0,
       drawer: null,
       items: [
-        { icon: "fas fa-chart-line", route: "/home" },
+        { icon: "fas fa-chart-line", route: "/" },
         { icon: "fas fa-th-large", route: "/data" },
         { icon: "fas fa-align-center", route: "/service" },
         { icon: "fas fa-download", route: "/download" },

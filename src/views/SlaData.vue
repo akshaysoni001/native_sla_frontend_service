@@ -13,6 +13,7 @@
           >
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
+
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -26,67 +27,124 @@
                 Add Sla
               </v-btn>
             </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
+            <validation-observer ref="observer" v-slot="{ invalid }">
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">{{ formTitle }}</span>
+                </v-card-title>
 
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.account"
-                        label="Account"
-                        :readonly="readonly"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.application"
-                        label="Application"
-                        :readonly="readonly"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.sla_number"
-                        label="SLA Number"
-                        :readonly="readonly"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.sla_type"
-                        label="SLA Type"
-                        :readonly="readonly"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.target"
-                        label="Target"
-                        :readonly="readonly"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.remark"
-                        label="Remark"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <validation-provider
+                          v-slot="{ errors }"
+                          name="Account"
+                          rules="required|alpha"
+                        >
+                          <v-text-field
+                            v-model="editedItem.account"
+                            label="Account"
+                            :error-messages="errors"
+                            required
+                            :readonly="readonly"
+                          ></v-text-field
+                        ></validation-provider>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <validation-provider
+                          v-slot="{ errors }"
+                          name="Application"
+                          rules="required|alpha"
+                        >
+                          <v-text-field
+                            v-model="editedItem.application"
+                            label="Application"
+                            :error-messages="errors"
+                            required
+                            :readonly="readonly"
+                          ></v-text-field
+                        ></validation-provider>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <validation-provider
+                          v-slot="{ errors }"
+                          name="SLA Number"
+                          :rules="{ required: true, digits: 2 }"
+                        >
+                          <v-text-field
+                            v-model="editedItem.sla_number"
+                            label="SLA Number"
+                            :error-messages="errors"
+                            required
+                            :readonly="readonly"
+                          ></v-text-field>
+                        </validation-provider>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <validation-provider
+                          v-slot="{ errors }"
+                          name="SLA Type"
+                          rules="required"
+                        >
+                          <v-text-field
+                            v-model="editedItem.sla_type"
+                            label="SLA Type"
+                            :error-messages="errors"
+                            required
+                            :readonly="readonly"
+                          ></v-text-field>
+                        </validation-provider>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <validation-provider
+                          v-slot="{ errors }"
+                          name="Target"
+                          rules="required|integer|between:0,100"
+                        >
+                          <v-text-field
+                            v-model="editedItem.target"
+                            label="Target"
+                            :error-messages="errors"
+                            required
+                            :readonly="readonly"
+                          ></v-text-field>
+                        </validation-provider>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <validation-provider
+                          v-slot="{ errors }"
+                          name="Remark"
+                          rules="required"
+                        >
+                          <v-text-field
+                            v-model="editedItem.remark"
+                            label="Remark"
+                            :error-messages="errors"
+                            required
+                          ></v-text-field>
+                        </validation-provider>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
-                  Cancel
-                </v-btn>
-                <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
-              </v-card-actions>
-            </v-card>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="close">
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="save"
+                    :disabled="invalid"
+                  >
+                    Submit
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </validation-observer>
           </v-dialog>
         </v-toolbar>
       </template>
@@ -100,6 +158,41 @@
 
 <script>
 import event from "@/services/ApiCalls.js";
+import {
+  required,
+  digits,
+  alpha,
+  integer,
+  between,
+} from "vee-validate/dist/rules";
+import {
+  extend,
+  ValidationObserver,
+  ValidationProvider,
+  setInteractionMode,
+} from "vee-validate";
+
+setInteractionMode("eager");
+extend("required", {
+  ...required,
+  message: "{_field_} can not be empty",
+});
+extend("integer", {
+  ...integer,
+  message: "{_field_} can be only integer",
+});
+extend("between", {
+  ...between,
+  message: "{_field_} should be in range (0,100)",
+});
+extend("digits", {
+  ...digits,
+  message: "{_field_} should be integer and only {length} digit",
+});
+extend("alpha", {
+  ...alpha,
+  message: "{_field_} should be Character only",
+});
 export default {
   data: () => ({
     dialog: false,
@@ -136,18 +229,18 @@ export default {
     editedIndex: -1,
     editedItem: {
       account: "",
-      application: 0,
-      sla_number: 0,
-      sla_type: 0,
-      target: 0,
+      application: null,
+      sla_number: null,
+      sla_type: null,
+      target: null,
       remark: "",
     },
     defaultItem: {
       account: "",
-      application: 0,
-      sla_number: 0,
-      sla_type: 0,
-      target: 0,
+      application: null,
+      sla_number: null,
+      sla_type: null,
+      target: null,
       remark: "",
     },
   }),
@@ -177,7 +270,10 @@ export default {
         console.log(error);
       });
   },
-
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
   methods: {
     editItem(item) {
       this.editedIndex = this.slas.indexOf(item);
@@ -206,6 +302,7 @@ export default {
       this.readonly = false;
       this.action = "Add SLA";
       this.request = "add";
+      this.$refs.observer.reset();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -228,6 +325,7 @@ export default {
         .then((response) => {
           console.log(response);
           this.message = response.message;
+          this.close();
         })
         .catch((error) => {
           console.log(error);

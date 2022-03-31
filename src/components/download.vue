@@ -22,23 +22,22 @@
                 data-vv-name="items"
                 prepend-icon="menu"
                 required
-              ></v-select>
-            </validation-provider>
-            <validation-provider
-              v-slot="{ errors }"
-              name="date"
-              rules="required"
-              ><v-row>
-                <v-col cols="12" lg="6">
-                  <v-menu
-                    v-model="menu1"
-                    :close-on-content-click="false"
-                    max-width="290"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
+              ></v-select> </validation-provider
+            ><v-row>
+              <v-col cols="12" lg="6">
+                <v-menu
+                  v-model="menu1"
+                  :close-on-content-click="false"
+                  max-width="290"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <validation-provider
+                      v-slot="{ errors }"
+                      name="date"
+                      rules="required"
+                    >
                       <v-text-field
                         :value="computedDateFormattedMomentjs"
-                        clearable
                         label="From"
                         prepend-icon="event"
                         readonly
@@ -46,41 +45,46 @@
                         v-on="on"
                         :error-messages="errors"
                         required
-                        @click:clear="date = null"
                       ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      v-model="fromDate"
-                      @change="menu1 = false"
-                    ></v-date-picker>
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" lg="6">
-                  <v-menu
-                    v-model="menu2"
-                    :close-on-content-click="false"
-                    max-width="290"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
+                    </validation-provider>
+                  </template>
+                  <v-date-picker
+                    v-model="fromDate"
+                    @change="menu1 = false"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12" lg="6">
+                <v-menu
+                  v-model="menu2"
+                  :close-on-content-click="false"
+                  max-width="290"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <validation-provider
+                      v-slot="{ errors }"
+                      name="date"
+                      rules="required"
+                    >
                       <v-text-field
                         :value="computedDateFormattedDatefns"
-                        clearable
                         label="To"
                         prepend-icon="event"
                         readonly
+                        :error-messages="errors"
                         required
                         v-bind="attrs"
                         v-on="on"
-                        @click:clear="date = null"
                       ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      v-model="toDate"
-                      @change="menu2 = false"
-                    ></v-date-picker>
-                  </v-menu>
-                </v-col> </v-row
-            ></validation-provider>
+                    </validation-provider>
+                  </template>
+                  <v-date-picker
+                    v-model="toDate"
+                    @change="menu2 = false"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+            </v-row>
             <validation-provider>
               <v-row>
                 <v-col cols="12" sm="6">
@@ -106,7 +110,6 @@
 
 <script>
 import event from "@/services/ApiCalls.js";
-import moment from "moment";
 import { format, parseISO } from "date-fns";
 import { required, digits, email, max, regex } from "vee-validate/dist/rules";
 import {
@@ -202,7 +205,7 @@ export default {
   computed: {
     computedDateFormattedMomentjs() {
       return this.fromDate
-        ? moment(this.fromDate).format("dddd, MMMM Do YYYY")
+        ? format(parseISO(this.fromDate), "EEEE, MMMM do yyyy")
         : "";
     },
     computedDateFormattedDatefns() {

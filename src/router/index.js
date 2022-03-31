@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import LoginView from "../views/LoginView.vue";
 import HomeView from "../views/HomeView.vue";
 import ServiceView from "../views/ServiceRequestView.vue";
 import SlaDataView from "../views/SlaData.vue";
@@ -12,11 +11,6 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "LoginLogout",
-    component: LoginView,
-  },
-  {
-    path: "/home",
     name: "HomeView",
     component: HomeView,
   },

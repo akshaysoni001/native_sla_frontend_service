@@ -1,15 +1,28 @@
 import axios from "axios";
-
 const apiClient = axios.create({
   baseURL: "http://localhost:5002/api",
   withCredentials: false,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
+    Authorization: "Bearer " + localStorage.getItem("token"),
   },
 });
 
 export default {
+  get_init_data() {
+    return apiClient.get("/login");
+  },
+  login(payload) {
+    console.log("loginpost", payload);
+    return apiClient.post("/login", payload);
+  },
+  signup(payload) {
+    return apiClient.post("/raise_requests/admin/vil", payload);
+  },
+  reset_password(payload) {
+    return apiClient.post("/raise_requests/admin/vil", payload);
+  },
   get_sla_data() {
     return apiClient.get("/account/vil");
   },
