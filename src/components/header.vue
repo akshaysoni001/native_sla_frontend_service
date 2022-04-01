@@ -5,7 +5,7 @@
       <template v-slot:prepend>
         <v-list-item three-line>
           <v-list-item-avatar>
-            <img src="https://randomuser.me/api/portraits/men/12.jpg" />
+            <img src="https://i.ibb.co/zmNdYDd/Akshay-Soni.png" />
           </v-list-item-avatar>
 
           <v-list-item-content>
@@ -39,7 +39,8 @@ export default {
       this.setUser("");
       this.setToken(null);
       localStorage.removeItem("token");
-      this.$emit("logout", false);
+      sessionStorage.clear();
+      this.$emit("logout", false, "logout", "success");
     },
   },
 };

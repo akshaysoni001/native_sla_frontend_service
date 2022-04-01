@@ -33,18 +33,18 @@
                   <template v-slot:activator="{ on, attrs }">
                     <validation-provider
                       v-slot="{ errors }"
-                      name="date"
+                      name="Required"
                       rules="required"
                     >
                       <v-text-field
-                        :value="computedDateFormattedMomentjs"
+                        :value="from_date"
                         label="From"
                         prepend-icon="event"
                         readonly
-                        v-bind="attrs"
-                        v-on="on"
                         :error-messages="errors"
                         required
+                        v-bind="attrs"
+                        v-on="on"
                       ></v-text-field>
                     </validation-provider>
                   </template>
@@ -63,11 +63,11 @@
                   <template v-slot:activator="{ on, attrs }">
                     <validation-provider
                       v-slot="{ errors }"
-                      name="date"
+                      name="Date Required"
                       rules="required"
                     >
                       <v-text-field
-                        :value="computedDateFormattedDatefns"
+                        :value="to_date"
                         label="To"
                         prepend-icon="event"
                         readonly
@@ -192,6 +192,8 @@ export default {
   methods: {
     submit() {
       this.$refs.observer.validate();
+      this.$emit("notification", "Downloaded", "success");
+      this.clear();
     },
     clear() {
       this.fromDate = null;
@@ -203,12 +205,12 @@ export default {
     },
   },
   computed: {
-    computedDateFormattedMomentjs() {
+    from_date() {
       return this.fromDate
         ? format(parseISO(this.fromDate), "EEEE, MMMM do yyyy")
         : "";
     },
-    computedDateFormattedDatefns() {
+    to_date() {
       return this.toDate
         ? format(parseISO(this.toDate), "EEEE, MMMM do yyyy")
         : "";

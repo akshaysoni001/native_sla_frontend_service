@@ -259,22 +259,25 @@ export default {
       val || this.closeDelete();
     },
   },
-
   created() {
-    event
-      .get_sla_data()
-      .then((response) => {
-        this.slas = response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    this.init();
   },
+
   components: {
     ValidationProvider,
     ValidationObserver,
   },
   methods: {
+    init() {
+      event
+        .get_sla_data()
+        .then((response) => {
+          this.slas = response.data.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     editItem(item) {
       this.editedIndex = this.slas.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -326,11 +329,13 @@ export default {
           console.log(response);
           this.message = response.message;
           this.close();
+          this.$emit("notification", response.data.message, "success");
         })
         .catch((error) => {
-          console.log(error);
+          this.$emit("notification", error.message, "red");
         });
       this.close();
+      this.init();
     },
   },
 };

@@ -158,9 +158,11 @@ export default {
         .then((response) => {
           this.message = response.data.message;
           this.clear();
+          console.log("hello");
+          this.$emit("notification", response.data.message, "success");
         })
         .catch((error) => {
-          console.log(error);
+          this.$emit("notification", error.message, "red");
         });
     },
     clear() {

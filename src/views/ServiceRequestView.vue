@@ -22,6 +22,16 @@
             @click="filter(chip.status)"
             >{{ chip.status }}
           </v-chip>
+          <v-chip
+            v-if="$store.state.user['roles'] === 'approver'"
+            key="Pending"
+            rounded
+            color="orange"
+            dark
+            class="mx-2 mb-2"
+            @click="filter('Pending')"
+            >{{ "pending" }}
+          </v-chip>
           <v-dialog v-model="dialog" max-width="500px">
             <v-card>
               <v-card-title>
@@ -145,10 +155,6 @@ export default {
         status: "Closed",
         color: "success",
       },
-      {
-        status: "Pending",
-        color: "orange",
-      },
     ],
     requests: [],
     editedIndex: -1,
@@ -192,18 +198,22 @@ export default {
     },
   },
   created() {
-    event
-      .get_request_data()
-      .then((response) => {
-        this.requests = response.data.data;
-        console.log(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    this.init();
   },
 
   methods: {
+    init() {
+      console.log("234");
+      event
+        .get_request_data()
+        .then((response) => {
+          this.requests = response.data.data;
+          console.log(response.data.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     filter(value) {
       if (value == "Closed") {
         this.search = "ed";
@@ -255,17 +265,20 @@ export default {
     save() {
       if (this.$refs.remark.validate()) {
         this.editedItem["action"] = this.action;
-        console.log("Data", this.editedItem);
+        console.log("Dataaa", this.editedItem);
         event
           .make_action(this.editedItem)
           .then((response) => {
             console.log(response);
             this.message = response.message;
             this.$refs.remark.reset();
+            this.$emit("notification", response.data.message, "success");
           })
           .catch((error) => {
-            console.log(error);
+            this.$emit("notification", error.message, "red");
           });
+
+        this.init();
         this.close();
       }
     },

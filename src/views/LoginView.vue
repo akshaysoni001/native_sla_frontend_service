@@ -141,6 +141,92 @@
                     </v-card-text>
                   </v-card>
                 </v-dialog>
+
+                <v-dialog
+                  v-model="dialog1"
+                  persistent
+                  :overlay="false"
+                  max-width="500px"
+                  transition="dialog-transition"
+                >
+                  <v-card>
+                    <v-card-title primary-title> Change Password </v-card-title>
+                    <v-card-text>
+                      <validation-observer
+                        ref="changePassword"
+                        v-slot="{ invalid }"
+                      >
+                        <v-row>
+                          <v-col>
+                            <validation-provider
+                              v-slot="{ errors }"
+                              name="Old Password"
+                              rules="required"
+                            >
+                              <v-text-field
+                                v-model="changepassword.old_password"
+                                label="Old Password"
+                                prepend-icon="password"
+                                :error-messages="errors"
+                                required
+                              ></v-text-field
+                            ></validation-provider>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <validation-provider
+                              v-slot="{ errors }"
+                              name="New Password"
+                              rules="required"
+                            >
+                              <v-text-field
+                                v-model="changepassword.new_password"
+                                label="New Password"
+                                prepend-icon="password"
+                                :error-messages="errors"
+                                required
+                              ></v-text-field
+                            ></validation-provider>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <validation-provider
+                              v-slot="{ errors }"
+                              name="Confirm Password"
+                              rules="required"
+                            >
+                              <v-text-field
+                                v-model="changepassword.confirm_password"
+                                label="Confirm Password"
+                                prepend-icon="password"
+                                :error-messages="errors"
+                                required
+                              ></v-text-field
+                            ></validation-provider>
+                          </v-col>
+                        </v-row>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="blue darken-1" text @click="clear">
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                            color="blue darken-1"
+                            text
+                            type="submit"
+                            @click="changePassword"
+                            :disabled="invalid"
+                          >
+                            Submit
+                          </v-btn>
+                        </v-card-actions>
+                      </validation-observer>
+                    </v-card-text>
+                  </v-card>
+                </v-dialog>
+
                 <v-col cols="12" md="6" class="teal rounded-bl-xl">
                   <div style="text-align: center; padding: 180px 0">
                     <v-card-text class="white--text">
@@ -228,7 +314,7 @@
                               <validation-provider
                                 v-slot="{ errors }"
                                 name="Name"
-                                rules="required|max:10"
+                                rules="required|max:20"
                               >
                                 <v-text-field
                                   label="Name"
@@ -342,7 +428,14 @@ export default {
       id: "",
       request: "reset_password",
     },
+    changepassword: {
+      old_password: "",
+      new_password: "",
+      confirm_password: "",
+      request: "change_password",
+    },
     dialog: false,
+    dialog1: false,
     Rules: [(v) => !!v || "value is required"],
     user: {
       username: "",
@@ -386,17 +479,24 @@ export default {
       event
         .login(this.user)
         .then((response) => {
-          this.isAuthenticated = response.data.success;
           localStorage.setItem("token", response.data.data[0]);
           const token = response.data.data[0];
           const user = response.data.data[1];
           console.log(user, token);
           this.setUser(user);
           this.setToken(token);
-          this.$emit("loggedIn", this.isAuthenticated);
+          this.clear();
+          console.log(response.status);
+          if (response.status === 201) {
+            this.dialog1 = true;
+          } else {
+            this.isAuthenticated = response.data.success;
+            this.$emit("loggedIn", this.isAuthenticated);
+          }
         })
         .catch((error) => {
-          console.log("error", error);
+          console.log("ERRRR", error);
+          this.$emit("notification", error, "info");
         });
     },
     SignUp() {
@@ -404,9 +504,12 @@ export default {
         .signup(this.signup)
         .then((response) => {
           console.log(response.data);
+          this.$emit("notification", response.data.message, "success");
+          this.clear();
         })
         .catch((error) => {
-          console.log(error.data);
+          this.$emit("notification", error.message, "red");
+          this.clear();
         });
     },
     reset() {
@@ -416,14 +519,44 @@ export default {
           this.dialog = false;
           this.resetpassword.id = "";
           console.log(response.data);
+          this.$emit("notification", response.data.message, "success");
         })
         .catch((error) => {
-          console.log(error);
+          this.$emit("notification", error.message, "red");
         });
     },
-    close() {
+    changePassword() {
+      console.log("Hello");
+      event
+        .changePassword(this.changepassword)
+        .then((response) => {
+          this.dialog1 = false;
+          this.changepassword.old_password = "";
+          this.changepassword.new_password = "";
+          this.changepassword.confirm_password = "";
+          console.log(response.data);
+          this.$emit("notification", response.data.message, "success");
+        })
+        .catch((error) => {
+          this.$emit("notification", error.message, "red");
+        });
+    },
+    clear() {
       this.dialog = false;
+      this.dialog1 = false;
       this.resetpassword.id = "";
+      this.signup.account = "";
+      this.signup.name = "";
+      this.signup.id = "";
+      this.signup.email = "";
+      this.signup.remark = "";
+      this.changepassword.old_password = "";
+      this.changepassword.new_password = "";
+      this.changepassword.confirm_password = "";
+    },
+    close() {
+      this.$refs.signUpForm.reset();
+      this.$refs.changePassword.reset();
       this.$refs.observer.reset();
     },
   },
