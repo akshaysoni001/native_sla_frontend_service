@@ -39,7 +39,7 @@
               <v-select
                 v-model="add_account"
                 v-if="add_account"
-                :items="items"
+                :items="all_accounts"
                 :error-messages="errors"
                 label="Select Account"
                 data-vv-name="account"
@@ -51,14 +51,12 @@
               v-slot="{ errors }"
               name="access"
               rules="required"
-            >
-              <v-select
-                v-model="select"
+              ><v-select
+                v-model="access"
                 v-if="access"
-                :items="items"
+                :items="all_rights"
                 :error-messages="errors"
-                label="Select Rights"
-                data-vv-name="rights"
+                label="Select Right"
                 prepend-icon="menu"
                 required
               ></v-select>
@@ -142,7 +140,7 @@ export default {
     textarea: null,
     services: ["Add Account", "Account Upgrade"],
     all_accounts: [],
-    all_rights: [],
+    all_rights: ["Manager", "Owner"],
   }),
   watch: {
     select(value) {
@@ -153,8 +151,8 @@ export default {
         this.access = true;
         this.add_account = false;
       } else {
-        this.add_account = false;
         this.access = false;
+        this.add_account = false;
       }
     },
   },
@@ -162,7 +160,7 @@ export default {
     event
       .get_access()
       .then((response) => {
-        this.services = response.data.data;
+        this.all_accounts = response.data.data["all_account"];
       })
       .catch((error) => {
         console.log(error);

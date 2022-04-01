@@ -177,7 +177,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "Approve Request" : "Delete Request";
     },
-    action() {
+    take_action() {
       return this.editedIndex === -1 ? "approve" : "reject";
     },
     Computedheaders() {
@@ -203,12 +203,10 @@ export default {
 
   methods: {
     init() {
-      console.log("234");
       event
         .get_request_data()
         .then((response) => {
           this.requests = response.data.data;
-          console.log(response.data.data);
         })
         .catch((error) => {
           console.log(error);
@@ -264,21 +262,18 @@ export default {
 
     save() {
       if (this.$refs.remark.validate()) {
-        this.editedItem["action"] = this.action;
-        console.log("Dataaa", this.editedItem);
+        this.editedItem["action"] = this.take_action;
         event
           .make_action(this.editedItem)
           .then((response) => {
-            console.log(response);
             this.message = response.message;
             this.$refs.remark.reset();
-            this.$emit("notification", response.data.message, "success");
+            this.init();
+            this.$emit("notification", response.data);
           })
           .catch((error) => {
-            this.$emit("notification", error.message, "red");
+            this.$emit("notification", error.response.data);
           });
-
-        this.init();
         this.close();
       }
     },

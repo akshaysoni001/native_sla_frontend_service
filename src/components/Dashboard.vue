@@ -35,9 +35,9 @@
                             >fas fa-chart-bar</v-icon
                           >
                         </div>
-                        <v-list-item-sub-title
+                        <v-list-item-subtitle
                           :class="active ? 'white--text' : 'black--text'"
-                          >Total Applications</v-list-item-sub-title
+                          >Total Applications</v-list-item-subtitle
                         >
                         <v-list-item-title
                           class="headline mb-1"
@@ -70,9 +70,9 @@
                             >fas fa-chart-bar</v-icon
                           >
                         </div>
-                        <v-list-item-sub-title
+                        <v-list-item-subtitle
                           :class="active ? 'white--text' : 'black--text'"
-                          >Total SLA's</v-list-item-sub-title
+                          >Total SLA's</v-list-item-subtitle
                         >
                         <v-list-item-title
                           class="headline mb-1"
@@ -105,9 +105,9 @@
                             >fas fa-chart-bar</v-icon
                           >
                         </div>
-                        <v-list-item-sub-title
+                        <v-list-item-subtitle
                           :class="active ? 'white--text' : 'black--text'"
-                          >Sla Met</v-list-item-sub-title
+                          >Sla Met</v-list-item-subtitle
                         >
                         <v-list-item-title
                           class="headline mb-1"
@@ -140,9 +140,9 @@
                             >fas fa-chart-bar</v-icon
                           >
                         </div>
-                        <v-list-item-sub-title
+                        <v-list-item-subtitle
                           :class="active ? 'white--text' : 'black--text'"
-                          >Sla Breached</v-list-item-sub-title
+                          >Sla Breached</v-list-item-subtitle
                         >
                         <v-list-item-title
                           class="headline mb-1"
@@ -175,9 +175,9 @@
                             >fas fa-chart-bar</v-icon
                           >
                         </div>
-                        <v-list-item-sub-title
+                        <v-list-item-subtitle
                           :class="active ? 'white--text' : 'black--text'"
-                          >Top Application</v-list-item-sub-title
+                          >Top Application</v-list-item-subtitle
                         >
                         <v-list-item-title
                           class="headline mb-1"

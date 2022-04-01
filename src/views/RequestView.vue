@@ -8,8 +8,7 @@ import RaiseRequest from "@/components/RaiseRequest";
 export default {
   components: { RaiseRequest },
   methods: {
-    notification(message, status) {
-      console.log("Notification", message, status);
+    notification(message) {
       this.$emit("notification", message, "success");
     },
   },
