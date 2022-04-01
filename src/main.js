@@ -8,7 +8,11 @@ Vue.config.productionTip = false;
 
 // Handle all Vue errors
 // Vue.config.errorHandler = (error) => ErrorService.onError(error);
+import SnackBar from "@/components/Snackbar";
 
+Vue.component("SnackBar", SnackBar);
+
+export const eventBus = new Vue();
 new Vue({
   router,
   store,

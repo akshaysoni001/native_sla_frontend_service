@@ -85,9 +85,7 @@
                               >
                             </v-col>
                             <v-col cols="12" sm="6">
-                              <v-btn color="#49D9A0" text @click="dialog = true"
-                                >forgot password</v-btn
-                              >
+                              <ResetPassword />
                             </v-col>
                           </v-row>
                         </v-col>
@@ -95,142 +93,7 @@
                     </validation-observer>
                   </v-card-text>
                 </v-col>
-                <v-dialog
-                  v-model="dialog"
-                  persistent
-                  :overlay="false"
-                  max-width="500px"
-                  transition="dialog-transition"
-                >
-                  <v-card>
-                    <v-card-title primary-title> Reset Password </v-card-title>
-                    <v-card-text>
-                      <validation-observer
-                        ref="resetPassword"
-                        v-slot="{ invalid }"
-                      >
-                        <v-row>
-                          <v-col>
-                            <validation-provider
-                              v-slot="{ errors }"
-                              name="Id"
-                              rules="required|max:10"
-                            >
-                              <v-text-field
-                                v-model="resetpassword.id"
-                                label="id"
-                                prepend-icon="person"
-                                :error-messages="errors"
-                                required
-                              ></v-text-field
-                            ></validation-provider>
-                          </v-col>
-                        </v-row>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn color="blue darken-1" text @click="clear">
-                            Cancel
-                          </v-btn>
-                          <v-btn
-                            color="blue darken-1"
-                            text
-                            type="submit"
-                            @click="reset"
-                            :disabled="invalid"
-                          >
-                            Submit
-                          </v-btn>
-                        </v-card-actions>
-                      </validation-observer>
-                    </v-card-text>
-                  </v-card>
-                </v-dialog>
-
-                <v-dialog
-                  v-model="dialog1"
-                  persistent
-                  :overlay="false"
-                  max-width="500px"
-                  transition="dialog-transition"
-                >
-                  <v-card>
-                    <v-card-title primary-title> Change Password </v-card-title>
-                    <v-card-text>
-                      <validation-observer
-                        ref="changePassword"
-                        v-slot="{ invalid }"
-                      >
-                        <v-row>
-                          <v-col>
-                            <validation-provider
-                              v-slot="{ errors }"
-                              name="Old Password"
-                              rules="required"
-                            >
-                              <v-text-field
-                                v-model="changepassword.old_password"
-                                label="Old Password"
-                                prepend-icon="password"
-                                :error-messages="errors"
-                                required
-                              ></v-text-field
-                            ></validation-provider>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col>
-                            <validation-provider
-                              v-slot="{ errors }"
-                              name="New Password"
-                              rules="required"
-                            >
-                              <v-text-field
-                                v-model="changepassword.new_password"
-                                label="New Password"
-                                prepend-icon="password"
-                                :error-messages="errors"
-                                required
-                              ></v-text-field
-                            ></validation-provider>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col>
-                            <validation-provider
-                              v-slot="{ errors }"
-                              name="Confirm Password"
-                              rules="required"
-                            >
-                              <v-text-field
-                                v-model="changepassword.confirm_password"
-                                label="Confirm Password"
-                                prepend-icon="password"
-                                :error-messages="errors"
-                                required
-                              ></v-text-field
-                            ></validation-provider>
-                          </v-col>
-                        </v-row>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn color="blue darken-1" text @click="clear">
-                            Cancel
-                          </v-btn>
-                          <v-btn
-                            color="blue darken-1"
-                            text
-                            type="submit"
-                            @click="changePassword"
-                            :disabled="invalid"
-                          >
-                            Submit
-                          </v-btn>
-                        </v-card-actions>
-                      </validation-observer>
-                    </v-card-text>
-                  </v-card>
-                </v-dialog>
-
+                <ChangePassword />
                 <v-col cols="12" md="6" class="rounded-bl-xl teal">
                   <div style="text-align: center; padding: 180px 0">
                     <v-card-text class="white--text">
@@ -411,15 +274,20 @@
 
 <script>
 import event from "@/services/ApiCalls.js";
+import { eventBus } from "@/main";
 import { mapMutations } from "vuex";
 import { required } from "vee-validate/dist/rules";
+
+import ResetPassword from "@/components/ResetPassword.vue";
+import ChangePassword from "@/components/ChangePassword.vue";
+// Import Components
+
 import {
   extend,
   ValidationObserver,
   ValidationProvider,
   setInteractionMode,
 } from "vee-validate";
-
 setInteractionMode("eager");
 extend("required", {
   ...required,
@@ -428,18 +296,6 @@ extend("required", {
 
 export default {
   data: () => ({
-    resetpassword: {
-      id: "",
-      request: "reset_password",
-    },
-    changepassword: {
-      old_password: "",
-      new_password: "",
-      confirm_password: "",
-      request: "change_password",
-    },
-    dialog: false,
-    dialog1: false,
     Rules: [(v) => !!v || "value is required"],
     user: {
       username: "",
@@ -475,6 +331,8 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    ResetPassword,
+    ChangePassword,
   },
   methods: {
     ...mapMutations(["setUser", "setToken"]),
@@ -498,7 +356,7 @@ export default {
         })
         .catch((error) => {
           this.$refs.loginForm.reset();
-          this.$emit("notification", error.response.data);
+          eventBus.$emit("notification", error.response.data);
         });
     },
     SignUp() {
@@ -515,49 +373,14 @@ export default {
           this.clear();
         });
     },
-    reset() {
-      event
-        .reset_password(this.resetpassword)
-        .then((response) => {
-          this.dialog = false;
-          this.resetpassword.id = "";
-          this.$refs.resetPassword.reset();
-          this.$emit("notification", response.data);
-        })
-        .catch((error) => {
-          this.$emit("notification", error.response.data);
-        });
-    },
-    changePassword() {
-      event
-        .changePassword(this.changepassword)
-        .then((response) => {
-          this.dialog1 = false;
-          this.changepassword.old_password = "";
-          this.changepassword.new_password = "";
-          this.changepassword.confirm_password = "";
-          this.$refs.changePassword.reset();
-          this.$emit("notification", response.data);
-        })
-        .catch((error) => {
-          this.$refs.changePassword.reset();
-          this.$emit("notification", error.response.data);
-        });
-    },
+    ResetPassword() {},
+    ChangePassword() {},
     clear() {
-      this.dialog = false;
-      this.dialog1 = false;
-      this.resetpassword.id = "";
       this.signup.account = "";
       this.signup.name = "";
       this.signup.id = "";
       this.signup.email = "";
       this.signup.remark = "";
-      this.changepassword.old_password = "";
-      this.changepassword.new_password = "";
-      this.changepassword.confirm_password = "";
-      //
-      //
     },
   },
 };
