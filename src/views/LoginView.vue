@@ -348,13 +348,15 @@ export default {
 
           this.clearLogin();
           if (response.status === 201) {
-            this.$refs.ChangePasswordRef.changepasswod();
+            console.log("Ref change");
+            this.$refs.ChangePasswordRef.OpenForm();
           } else {
             this.isAuthenticated = response.data.success;
             this.$emit("loggedIn", this.isAuthenticated);
           }
         })
         .catch((error) => {
+          console.log(error);
           eventBus.$emit("notification", error.response.data);
         });
     },

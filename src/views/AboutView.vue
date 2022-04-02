@@ -105,6 +105,7 @@
             <div>
               <strong>{{ list.skill }}</strong>
             </div>
+            <div>{{ list.service }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -121,17 +122,68 @@ export default {
         skill: "Python",
         img: "fab fa-python",
         color: "DarkBlue",
+        service: "Backend",
       },
-      { skill: "Flask", img: "fab fa-foursquare", color: "black" },
-      { skill: "VueJs", img: "fab fa-vuejs", color: "green" },
-      { skill: "Docker", img: "fab fa-docker", color: "blue" },
-      { skill: "Oracle SQL", img: "fa-solid fa-database", color: "purple" },
-      { skill: "Linux", img: "fab fa-linux", color: "black" },
-      { skill: "Big Data", img: "fab fa-hire-a-helper", color: "yellow" },
-      { skill: "Kubernaties", img: "fab fa-empire", color: "blue" },
-      { skill: "MongoDB", img: "fab fa-envira", color: "green" },
-      { skill: "Git Hub", img: "fab fa-git", color: "black" },
-      { skill: "AWS Cloud", img: "fab fa-aws", color: "red" },
+      {
+        skill: "Flask",
+        img: "fab fa-foursquare",
+        color: "black",
+        service: "Backend Web",
+      },
+      {
+        skill: "VueJs",
+        img: "fab fa-vuejs",
+        color: "green",
+        service: "Front-End",
+      },
+      {
+        skill: "Docker",
+        img: "fab fa-docker",
+        color: "blue",
+        service: "DevOps",
+      },
+      {
+        skill: "Oracle SQL",
+        img: "fa-solid fa-database",
+        color: "purple",
+        service: "Database",
+      },
+      {
+        skill: "Linux",
+        img: "fab fa-linux",
+        color: "black",
+        service: "Operations",
+      },
+      {
+        skill: "Big Data",
+        img: "fab fa-hire-a-helper",
+        color: "yellow",
+        service: "Database",
+      },
+      {
+        skill: "Kubernaties",
+        img: "fab fa-empire",
+        color: "blue",
+        service: "Cluseter Manager",
+      },
+      {
+        skill: "MongoDB",
+        img: "fab fa-envira",
+        color: "green",
+        service: "No SQL Database",
+      },
+      {
+        skill: "Git Hub",
+        img: "fab fa-git",
+        color: "black",
+        service: "Development",
+      },
+      {
+        skill: "AWS Cloud",
+        img: "fab fa-aws",
+        color: "orange",
+        service: "Cloud Platform",
+      },
     ],
   }),
 };

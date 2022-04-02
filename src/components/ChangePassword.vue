@@ -31,8 +31,8 @@
             <v-col>
               <validation-provider
                 v-slot="{ errors }"
-                name="New Password"
-                rules="required"
+                name="New_Password"
+                rules="required|password:@Confirm_Password"
               >
                 <v-text-field
                   v-model="changepassword.new_password"
@@ -48,7 +48,7 @@
             <v-col>
               <validation-provider
                 v-slot="{ errors }"
-                name="Confirm Password"
+                name="Confirm_Password"
                 rules="required"
               >
                 <v-text-field
@@ -97,6 +97,15 @@ extend("required", {
   ...required,
   message: "{_field_} can not be empty",
 });
+
+extend("password", {
+  params: ["target"],
+  validate(value, { target }) {
+    return value === target;
+  },
+  message: "Password confirmation does not match",
+});
+
 export default {
   components: {
     ValidationProvider,
@@ -121,6 +130,7 @@ export default {
         .changePassword(this.changepassword)
         .then((response) => {
           this.clear();
+          console.log("IIIII");
           eventBus.$emit("notification", response.data);
         })
         .catch((error) => {
