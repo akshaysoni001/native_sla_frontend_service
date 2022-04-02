@@ -7,7 +7,7 @@ import vuetify from "./plugins/vuetify";
 Vue.config.productionTip = false;
 
 // Handle all Vue errors
-// Vue.config.errorHandler = (error) => ErrorService.onError(error);
+// // Vue.config.errorHandler = (error) => ErrorService.onError(error);
 import SnackBar from "@/components/Snackbar";
 
 Vue.component("SnackBar", SnackBar);

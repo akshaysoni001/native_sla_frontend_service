@@ -5,11 +5,9 @@
       <template v-if="this.isAuthenticated">
         <SideBar />
         <TopHeader @logout="logout" />
-        <v-container> <router-view @notification="notification" /> </v-container
+        <v-container> <router-view /> </v-container
       ></template>
-      <template v-else
-        ><LoginView @loggedIn="login" @notification="notification" />
-      </template>
+      <template v-else><LoginView @loggedIn="login" /> </template>
     </v-main>
   </v-app>
 </template>
@@ -17,15 +15,13 @@
 import SideBar from "@/components/SiderBar";
 import TopHeader from "@/components/header";
 import LoginView from "@/views/LoginView.vue";
+import { eventBus } from "./main";
 
 export default {
   name: "App",
   data: () => ({
     isAuthenticated: false,
   }),
-  created() {
-    this.clear();
-  },
   mounted() {
     if (localStorage.getItem("token") != null) {
       this.isAuthenticated = true;
@@ -35,10 +31,12 @@ export default {
     login(value) {
       this.isAuthenticated = value;
     },
-    logout(value, message) {
-      this.isAuthenticated = value;
-      this.snackbar.text = message;
-      this.snackbar.visible = true;
+    logout() {
+      this.isAuthenticated = false;
+      eventBus.$emit("notification", {
+        message: "Logout Successfully",
+        success: true,
+      });
     },
   },
   components: { SideBar, TopHeader, LoginView },

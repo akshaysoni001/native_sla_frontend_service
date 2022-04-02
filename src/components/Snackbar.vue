@@ -1,7 +1,6 @@
 <template>
   <v-snackbar
     v-model="snackbar.visible"
-    auto-height
     :color="snackbar.color"
     :multi-line="snackbar.mode === 'multi-line'"
     :timeout="snackbar.timeout"
@@ -48,6 +47,7 @@ export default {
     notification(response) {
       console.log("in Snackbar Component");
       if (response.success != true) {
+        console.log("Not");
         this.snackbar.icon = "error";
         this.snackbar.color = "error";
       }

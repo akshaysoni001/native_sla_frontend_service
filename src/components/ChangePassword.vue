@@ -82,9 +82,26 @@
 
 <script>
 import { eventBus } from "@/main";
-
+import { required } from "vee-validate/dist/rules";
 import event from "@/services/ApiCalls.js";
+import { mapMutations } from "vuex";
+import {
+  extend,
+  ValidationObserver,
+  ValidationProvider,
+  setInteractionMode,
+} from "vee-validate";
+setInteractionMode("eager");
+
+extend("required", {
+  ...required,
+  message: "{_field_} can not be empty",
+});
 export default {
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
   data: () => ({
     dialog: false,
     changepassword: {
@@ -95,6 +112,10 @@ export default {
     },
   }),
   methods: {
+    ...mapMutations(["setUser", "setToken"]),
+    OpenForm() {
+      this.dialog = true;
+    },
     changePassword() {
       event
         .changePassword(this.changepassword)
@@ -106,6 +127,10 @@ export default {
           this.clear();
           eventBus.$emit("notification", error.response.data);
         });
+      this.setUser("");
+      this.setToken(null);
+      localStorage.removeItem("token");
+      sessionStorage.clear();
     },
     clear() {
       this.dialog = false;

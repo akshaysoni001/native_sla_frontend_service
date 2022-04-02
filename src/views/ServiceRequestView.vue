@@ -32,71 +32,6 @@
             @click="filter('Pending')"
             >{{ "pending" }}
           </v-chip>
-          <v-dialog v-model="dialog" max-width="500px">
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
-
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.account"
-                        label="Account"
-                        readonly
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.activity"
-                        label="Activity"
-                        readonly
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="12" md="12">
-                      <v-text-field
-                        v-model="editedItem.dynamic_information"
-                        label="Request"
-                        readonly
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.status"
-                        label="Status"
-                        readonly
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.user_id"
-                        label="User"
-                        readonly
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.remark"
-                        label="Remark"
-                        ref="remark"
-                        :rules="Rules"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
-                  Cancel
-                </v-btn>
-                <v-btn color="blue darken-1" text @click="save"> Submit </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
         </v-toolbar>
       </template>
 
@@ -115,10 +50,7 @@
         </v-chip>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon medium class="mr-2" @click="editItem(item)" color="green">
-          check
-        </v-icon>
-        <v-icon medium @click="deleteItem(item)" color="red"> close </v-icon>
+        <SlaServiceForm :item="item" />
       </template>
     </v-data-table>
   </v-container>
@@ -126,11 +58,10 @@
 
 <script>
 import event from "@/services/ApiCalls.js";
+import SlaServiceForm from "@/components/SlaServiceForm.vue";
 export default {
   data: () => ({
-    dialog: false,
     search: "Open",
-    Rules: [(v) => !!v || "Required"],
     headers: [
       { text: "User", value: "user_id", show: true },
       {
@@ -157,29 +88,9 @@ export default {
       },
     ],
     requests: [],
-    editedIndex: -1,
-    editedItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
-    defaultItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
   }),
+  components: { SlaServiceForm },
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "Approve Request" : "Delete Request";
-    },
-    take_action() {
-      return this.editedIndex === -1 ? "approve" : "reject";
-    },
     Computedheaders() {
       if (this.search != "Pending") {
         return this.headers.filter((x) => x.show);
@@ -188,19 +99,9 @@ export default {
       }
     },
   },
-
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
   created() {
     this.init();
   },
-
   methods: {
     init() {
       event
@@ -224,58 +125,6 @@ export default {
       else if (status == "Approved") return "success";
       else if (status == "Pending") return "orange";
       else return "red";
-    },
-    editItem(item) {
-      this.editedIndex = -1;
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-
-    deleteItem(item) {
-      this.editedIndex = 1;
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
-      this.closeDelete();
-    },
-
-    close() {
-      this.$refs.remark.reset();
-      this.dialog = false;
-      this.action = null;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    save() {
-      if (this.$refs.remark.validate()) {
-        this.editedItem["action"] = this.take_action;
-        event
-          .make_action(this.editedItem)
-          .then((response) => {
-            this.message = response.message;
-            this.$refs.remark.reset();
-            this.init();
-            this.$emit("notification", response.data);
-          })
-          .catch((error) => {
-            this.$emit("notification", error.response.data);
-          });
-        this.close();
-      }
     },
   },
 };

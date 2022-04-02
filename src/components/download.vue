@@ -129,6 +129,7 @@ import {
   ValidationProvider,
   setInteractionMode,
 } from "vee-validate";
+import { eventBus } from "@/main";
 
 setInteractionMode("eager");
 
@@ -202,7 +203,10 @@ export default {
   methods: {
     submit() {
       this.$refs.observer.validate();
-      this.$emit("notification", "Downloaded", "success");
+      eventBus.$emit("notification", {
+        message: "SLA Downloaded",
+        success: true,
+      });
       this.clear();
     },
     clear() {

@@ -98,6 +98,7 @@
 
 <script>
 import event from "@/services/ApiCalls.js";
+import { eventBus } from "@/main";
 import { required, digits, email, max, regex } from "vee-validate/dist/rules";
 import {
   extend,
@@ -157,10 +158,10 @@ export default {
         .post_feedback(this.formData)
         .then((response) => {
           this.message = response.data.message;
-          this.$emit("notification", response.data);
+          eventBus.$emit("notification", response.data);
         })
         .catch((error) => {
-          this.$emit("notification", error.response.data);
+          eventBus.$emit("notification", error.response.data);
         });
 
       this.clear();

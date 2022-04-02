@@ -40,7 +40,7 @@ export default {
       this.setToken(null);
       localStorage.removeItem("token");
       sessionStorage.clear();
-      this.$emit("logout", false, "Logout Successfully.");
+      this.$emit("logout");
     },
   },
 };

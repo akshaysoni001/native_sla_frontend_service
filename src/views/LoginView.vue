@@ -93,7 +93,7 @@
                     </validation-observer>
                   </v-card-text>
                 </v-col>
-                <ChangePassword />
+                <ChangePassword ref="ChangePasswordRef" />
                 <v-col cols="12" md="6" class="rounded-bl-xl teal">
                   <div style="text-align: center; padding: 180px 0">
                     <v-card-text class="white--text">
@@ -345,17 +345,16 @@ export default {
           const user = response.data.data[1];
           this.setUser(user);
           this.setToken(token);
-          this.$refs.loginForm.reset();
-          this.clear();
+
+          this.clearLogin();
           if (response.status === 201) {
-            this.dialog1 = true;
+            this.$refs.ChangePasswordRef.changepasswod();
           } else {
             this.isAuthenticated = response.data.success;
             this.$emit("loggedIn", this.isAuthenticated);
           }
         })
         .catch((error) => {
-          this.$refs.loginForm.reset();
           eventBus.$emit("notification", error.response.data);
         });
     },
@@ -363,24 +362,28 @@ export default {
       event
         .signup(this.signup)
         .then((response) => {
-          this.$emit("notification", response.data);
+          eventBus.$emit("notification", response.data);
           this.$refs.signUpForm.reset();
-          this.clear();
         })
         .catch((error) => {
-          this.$emit("notification", error.response.data);
-          this.$refs.signUpForm.reset();
-          this.clear();
+          eventBus.$emit("notification", error.response.data);
         });
+      this.clear();
     },
-    ResetPassword() {},
-    ChangePassword() {},
     clear() {
       this.signup.account = "";
       this.signup.name = "";
       this.signup.id = "";
       this.signup.email = "";
       this.signup.remark = "";
+      this.$refs.signUpForm.reset();
+    },
+
+    clearLogin() {
+      this.user.username = "";
+      this.user.password = "";
+      this.user.account = "";
+      this.$refs.loginForm.reset();
     },
   },
 };
