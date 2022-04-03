@@ -109,6 +109,8 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+
+      this.$emit("refresh");
     },
 
     save() {

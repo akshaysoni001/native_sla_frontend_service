@@ -27,7 +27,7 @@
       </v-list-item>
     </v-list>
     <v-toolbar flat class="mt-n6" color="rgba(0,0,0,0)">
-      <v-toolbar-title> Project Statics </v-toolbar-title>
+      <v-toolbar-title> Account Statics </v-toolbar-title>
     </v-toolbar>
 
     <v-card flat class="mx-2 rounded-l-xl pb-1" color="#EEEEEE">
@@ -35,19 +35,19 @@
         <v-col cols="12" sm="5">
           <v-list-item two-line class="mt-n4">
             <v-list-item-content>
-              <v-list-item-title class=" ">Project</v-list-item-title>
+              <v-list-item-title class=" ">Account</v-list-item-title>
               <v-list-item-subtitle class=" ">progress</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-col>
         <v-col cols="12" sm="4">
           <v-progress-circular
-            :value="75"
+            :value="progress"
             :size="50"
             :width="3"
             color="teal"
             class="mt-n1"
-            >75</v-progress-circular
+            >{{ progress }}</v-progress-circular
           >
         </v-col>
         <v-col cols="12" sm="3" class="mt-2">
@@ -56,7 +56,7 @@
       </v-row>
     </v-card>
     <v-row class="mt-2 mx-2">
-      <v-btn rounded small block>Project Details</v-btn>
+      <v-btn rounded small block>Account Details</v-btn>
     </v-row>
   </v-navigation-drawer>
 </template>
@@ -65,6 +65,7 @@
 export default {
   data() {
     return {
+      progress: 0,
       files: [
         {
           color: "green",
@@ -92,6 +93,13 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    init(applications, progress) {
+      this.files = applications;
+      this.progress = progress;
+      console.log(this.files);
+    },
   },
 };
 </script>

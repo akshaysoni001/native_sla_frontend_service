@@ -29,6 +29,11 @@ export default {
     payload["user_id"] = user;
     return apiClient.post("/change_password", payload);
   },
+  get_initial_data() {
+    let user = store.state.user["user_id"];
+    let account = store.state.user["account"];
+    return apiClient.get(`/home/${user}/${account}`);
+  },
   get_sla_data() {
     let account = store.state.user["account"];
     return apiClient.get(`/account/${account}`);

@@ -1,7 +1,9 @@
 <template>
   <v-container>
-    <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-    <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+    <v-icon small class="mr-2" @click="editItem(item)" color="orange">
+      mdi-pencil
+    </v-icon>
+    <v-icon small @click="deleteItem(item)" color="red"> mdi-delete</v-icon>
     <v-dialog v-model="dialog" max-width="500px">
       <validation-observer ref="observer" v-slot="{ invalid }">
         <v-card>
@@ -23,7 +25,7 @@
                       label="Account"
                       :error-messages="errors"
                       required
-                      :readonly="readonly"
+                      readonly
                     ></v-text-field
                   ></validation-provider>
                 </v-col>
@@ -33,13 +35,15 @@
                     name="Application"
                     rules="required|alpha"
                   >
-                    <v-text-field
+                    <v-select
                       v-model="editedItem.application"
-                      label="Application"
+                      :items="applications"
                       :error-messages="errors"
+                      label="Application"
+                      data-vv-name="select"
+                      :readonly="readonly_imp"
                       required
-                      :readonly="readonly"
-                    ></v-text-field
+                    ></v-select
                   ></validation-provider>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -53,8 +57,39 @@
                       label="SLA Number"
                       :error-messages="errors"
                       required
+                      :readonly="readonly_imp"
+                    ></v-text-field>
+                  </validation-provider>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="SLA Description"
+                    :rules="{ required: true }"
+                  >
+                    <v-text-field
+                      v-model="editedItem.sla_description"
+                      label="SLA Description"
+                      :error-messages="errors"
+                      required
                       :readonly="readonly"
                     ></v-text-field>
+                  </validation-provider>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Penalty"
+                    :rules="{ required: true }"
+                  >
+                    <v-select
+                      v-model="editedItem.penalty"
+                      :items="penalty_list"
+                      :error-messages="errors"
+                      label="Penalty"
+                      data-vv-name="select"
+                      required
+                    ></v-select>
                   </validation-provider>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -63,13 +98,14 @@
                     name="SLA Type"
                     rules="required"
                   >
-                    <v-text-field
+                    <v-select
                       v-model="editedItem.sla_type"
-                      label="SLA Type"
+                      :items="sla_types"
                       :error-messages="errors"
+                      label="Sla Type"
+                      data-vv-name="select"
                       required
-                      :readonly="readonly"
-                    ></v-text-field>
+                    ></v-select>
                   </validation-provider>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -90,12 +126,12 @@
                 <v-col cols="12" sm="6" md="4">
                   <validation-provider
                     v-slot="{ errors }"
-                    name="Remark"
+                    name="Reason"
                     rules="required"
                   >
                     <v-text-field
-                      v-model="editedItem.remark"
-                      label="Remark"
+                      v-model="editedItem.reason"
+                      label="Reason"
                       :error-messages="errors"
                       required
                     ></v-text-field>
@@ -121,6 +157,8 @@
 <script>
 import event from "@/services/ApiCalls.js";
 import { eventBus } from "@/main";
+
+import store from "@/store/index";
 import {
   required,
   digits,
@@ -157,28 +195,37 @@ extend("alpha", {
   message: "{_field_} should be Character only",
 });
 export default {
-  props: { item: {} },
+  props: { item: {}, applications: [] },
   data: () => ({
     dialog: false,
     readonly: false,
+    readonly_imp: true,
+    penalty_list: [true, false],
+    sla_types: ["monthly", "weekly", "daily"],
+    penalty: false,
+    sla_type: null,
     action: "Add SLA",
     request: "add",
     editedIndex: -1,
     editedItem: {
-      account: "",
+      account: store.state.user.account,
       application: null,
       sla_number: null,
       sla_type: null,
       target: null,
-      remark: "",
+      sla_description: null,
+      penalty: null,
+      reason: "",
     },
     defaultItem: {
-      account: "",
+      account: store.state.user.account,
       application: null,
       sla_number: null,
       sla_type: null,
       target: null,
-      remark: "",
+      sla_description: null,
+      penalty: false,
+      reason: "",
     },
     slas: [],
   }),
@@ -220,6 +267,7 @@ export default {
     },
     add_sla() {
       this.dialog = true;
+      this.readonly_imp = false;
     },
     close() {
       this.dialog = false;

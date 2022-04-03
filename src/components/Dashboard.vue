@@ -1,17 +1,19 @@
 <template>
   <v-container>
-    <SideBarRight />
+    <SideBarRight ref="SlaRightBar" />
     <v-toolbar color="rgba(0,0,0,0)" flat class="mt-n4">
       <v-btn-toggle tile group v-model="toggle_exclusive" color="#49D9A0">
         <v-btn><v-icon>fas fa-arrow-left</v-icon></v-btn>
         <v-btn><v-icon>fas fa-arrow-right</v-icon></v-btn>
       </v-btn-toggle>
       <v-spacer></v-spacer>
-      <v-btn color="#49D9A0" rounded dark>finish Sprint</v-btn>
+      <v-btn color="#49D9A0" rounded dark disabled="invalid"
+        >finish Sprint</v-btn
+      >
     </v-toolbar>
     <v-toolbar color="rgba(0,0,0,0)" flat class="mt-n5">
       <v-toolbar-title>SLA Overview </v-toolbar-title>
-      <v-btn color="#49D9A0" text class="ml-5">last sprint</v-btn>
+      <!-- <v-btn color="#49D9A0" text class="ml-5" >last sprint</v-btn> -->
     </v-toolbar>
 
     <v-item-group mandatory class="mt-n4">
@@ -42,7 +44,9 @@
                         <v-list-item-title
                           class="headline mb-1"
                           :class="active ? 'white--text' : 'black--text'"
-                          ><strong>52</strong></v-list-item-title
+                          ><strong>{{
+                            total_application_count
+                          }}</strong></v-list-item-title
                         >
                       </v-list-item-content>
                     </v-list-item>
@@ -77,7 +81,9 @@
                         <v-list-item-title
                           class="headline mb-1"
                           :class="active ? 'white--text' : 'black--text'"
-                          ><strong>52</strong></v-list-item-title
+                          ><strong>{{
+                            total_sla_count
+                          }}</strong></v-list-item-title
                         >
                       </v-list-item-content>
                     </v-list-item>
@@ -112,7 +118,9 @@
                         <v-list-item-title
                           class="headline mb-1"
                           :class="active ? 'white--text' : 'black--text'"
-                          ><strong>52</strong></v-list-item-title
+                          ><strong>{{
+                            sla_met_count
+                          }}</strong></v-list-item-title
                         >
                       </v-list-item-content>
                     </v-list-item>
@@ -147,7 +155,9 @@
                         <v-list-item-title
                           class="headline mb-1"
                           :class="active ? 'white--text' : 'black--text'"
-                          ><strong>52</strong></v-list-item-title
+                          ><strong>{{
+                            sla_breached_count
+                          }}</strong></v-list-item-title
                         >
                       </v-list-item-content>
                     </v-list-item>
@@ -182,7 +192,7 @@
                         <v-list-item-title
                           class="headline mb-1"
                           :class="active ? 'white--text' : 'black--text'"
-                          ><strong>52</strong></v-list-item-title
+                          ><strong>app_1</strong></v-list-item-title
                         >
                       </v-list-item-content>
                     </v-list-item>
@@ -200,21 +210,30 @@
       </v-col>
       <v-col cols="12" md="5" sm="12">
         <v-toolbar color="rgba(0,0,0,0)" flat class="mt-n2">
-          <v-toolbar-title>Sprint Stories </v-toolbar-title>
+          <v-toolbar-title>SLA Stories </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn rounded small>sell all</v-btn>
         </v-toolbar>
         <v-simple-table class="grey lighten-3">
           <template v-slot:default>
+            <thead>
+              <tr>
+                <td>Id</td>
+                <td>Application</td>
+                <td>Number</td>
+                <td>Percentage</td>
+              </tr>
+            </thead>
+            <v-divider vertical-sm></v-divider>
             <tbody>
-              <tr v-for="item in orders" :key="item.name">
-                <td>{{ item.id }}</td>
-                <td>{{ item.title }}</td>
-                <td>{{ item.state }}</td>
-                <td>{{ item.count }}</td>
-                <td>
-                  <v-icon small>{{ item.icon }}</v-icon>
-                </td>
+              <tr v-for="sla in data['sla_data']" :key="sla.id">
+                <td>{{ sla.id }}</td>
+                <td>{{ sla.application }}</td>
+                <td>{{ sla.sla_number }}</td>
+                <td>{{ sla.sla_percentage }}</td>
+                <!-- <td>
+                  <v-icon small>{{ sla.sla_type }}</v-icon>
+                </td> -->
               </tr>
             </tbody>
           </template>
@@ -224,91 +243,50 @@
     <v-toolbar color="rgba(0,0,0,0)" flat class="mt-n8">
       <v-toolbar-title> SLA Owners </v-toolbar-title>
     </v-toolbar>
-    <v-card class="rounded-lg">
-      <v-row>
-        <v-col cols="12" sm="3">
-          <v-list subheader two-line>
-            <v-list-item>
-              <v-badge
-                bordered
-                bottom
-                color="#49D9A0"
-                dot
-                offset-x="12"
-                offset-y="8"
-              >
-                <v-list-item-avatar>
-                  <v-avatar size="40">
-                    <v-img
-                      src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
-                    ></v-img>
-                  </v-avatar>
-                </v-list-item-avatar>
-              </v-badge>
-              <v-list-item-content class="mx-2">
-                <v-list-item-title>AAE Ideapro</v-list-item-title>
 
-                <v-list-item-subtitle>32 Story point</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-col>
-        <v-col cols="12" sm="3">
-          <v-list subheader two-line>
-            <v-list-item>
-              <v-badge
-                bordered
-                bottom
-                color="#49D9A0"
-                dot
-                offset-x="12"
-                offset-y="8"
-              >
-                <v-list-item-avatar>
-                  <v-avatar size="40">
-                    <v-img
-                      src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
-                    ></v-img>
-                  </v-avatar>
-                </v-list-item-avatar>
-              </v-badge>
-              <v-list-item-content class="mx-2">
-                <v-list-item-title>AAE Ideapro</v-list-item-title>
+    <v-row>
+      <v-col
+        cols="12"
+        sm="6"
+        md="4"
+        v-for="owner in data['sla_owners']"
+        :key="owner.account"
+      >
+        <v-card class="rounded-lg">
+          <v-responsive class="pt-4">
+            <v-list subheader two-line>
+              <v-list-item>
+                <v-badge
+                  bordered
+                  bottom
+                  color="#49D9A0"
+                  dot
+                  offset-x="12"
+                  offset-y="8"
+                >
+                  <v-list-item-avatar>
+                    <v-avatar size="40">
+                      <v-img
+                        src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
+                      ></v-img>
+                    </v-avatar>
+                  </v-list-item-avatar>
+                </v-badge>
+                <v-list-item-content class="mx-2">
+                  <v-list-item-title>{{
+                    owner["user_name"]
+                  }}</v-list-item-title>
 
-                <v-list-item-subtitle>32 Story point</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-col>
-        <v-col cols="12" sm="3">
-          <v-list subheader two-line>
-            <v-list-item>
-              <v-badge
-                bordered
-                bottom
-                color="#49D9A0"
-                dot
-                offset-x="12"
-                offset-y="8"
-              >
-                <v-list-item-avatar>
-                  <v-avatar size="40">
-                    <v-img
-                      src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
-                    ></v-img>
-                  </v-avatar>
-                </v-list-item-avatar>
-              </v-badge>
-              <v-list-item-content class="mx-2">
-                <v-list-item-title>AAE Ideapro</v-list-item-title>
-
-                <v-list-item-subtitle>32 Story point</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-col>
-      </v-row>
-    </v-card>
+                  <v-list-item-subtitle>{{
+                    owner["account"]
+                  }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-responsive>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -323,6 +301,7 @@ import {
   LegendComponent,
 } from "echarts/components";
 
+import event from "@/services/ApiCalls.js";
 import VChart, { THEME_KEY } from "vue-echarts";
 
 use([
@@ -337,40 +316,12 @@ export default {
   name: "Home",
   data() {
     return {
+      flag: false,
       toggle_exclusive: 1,
-      orders: [
-        {
-          id: "P42",
-          title: "Onboarding",
-          state: "Delivered",
-          count: 3,
-          icon: "fas fa-ellipsis-h",
-        },
-        {
-          id: "P32",
-          title: "User profile",
-          state: "Delivered",
-          count: 8,
-          icon: "fas fa-ellipsis-h",
-        },
-        {
-          id: "P56",
-          title: "Landing page",
-          state: "Approved",
-          count: 12,
-          icon: "fas fa-ellipsis-h",
-        },
-        {
-          id: "P36",
-          title: "Settings",
-          state: "Approved",
-          count: 9,
-          icon: "fas fa-ellipsis-h",
-        },
-      ],
+      data: [],
       option: {
         title: {
-          text: "Burnsown chart",
+          text: "Graph Representation",
           left: "left",
         },
         tooltip: {
@@ -380,16 +331,16 @@ export default {
 
         series: [
           {
-            name: "Traffic Sources",
+            name: "SLA Overview",
             type: "pie",
             radius: "65%",
             center: ["45%", "50%"],
             data: [
-              { value: 335, name: "Direct" },
-              { value: 310, name: "Email" },
-              { value: 234, name: "Ad Networks" },
-              { value: 135, name: "Video Ads" },
-              { value: 1548, name: "Search Engines" },
+              { value: 335, name: "Faild SLA" },
+              { value: 310, name: "SLA Breached" },
+              { value: 234, name: "Account Status" },
+              { value: 135, name: "Penalty SLA" },
+              { value: 1548, name: "Application Status" },
             ],
             emphasis: {
               itemStyle: {
@@ -402,6 +353,54 @@ export default {
         ],
       },
     };
+  },
+  created() {
+    event
+      .get_initial_data()
+      .then((response) => {
+        this.data = response.data.data;
+        console.log(this.data);
+        console.log("sla-dataa", this.data["sla_data"]);
+        this.flag = true;
+        let project_progress =
+          (this.data["sla_met"].length / this.data["slas"].length) * 100;
+        this.$refs.SlaRightBar.init(
+          this.data["applications"],
+          Math.round(project_progress)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+  methods: {},
+  computed: {
+    total_application_count() {
+      if (this.flag == true) {
+        var L = this.data["applications"].length;
+      }
+      return L;
+    },
+    total_sla_count() {
+      if (this.flag == true) {
+        console.log(this.data);
+        var L = this.data["slas"].length;
+      }
+      return L;
+    },
+    sla_met_count() {
+      if (this.flag == true) {
+        console.log(this.data);
+        var L = this.data["sla_met"].length;
+      }
+      return L;
+    },
+    sla_breached_count() {
+      if (this.flag == true) {
+        var L = this.data["sla_breached"].length;
+      }
+      return L;
+    },
   },
   components: { SideBarRight, VChart },
   provide: { [THEME_KEY]: "green" },

@@ -1,18 +1,13 @@
-# Dockerfile
-FROM node:11.13.0-alpine
-
-# create destination directory
-# RUN mkdir -p /app
+# build stage
+FROM node:lts-alpine as build-stage
 WORKDIR /app
-
-# update and install dependency
-RUN apk update && apk upgrade
-# RUN apk add git
-
-# copy the app, note .dockerignore
-COPY . /app
-# RUN npm install --unsafe-perm -g node-sass
+COPY package*.json ./
 RUN npm install
+COPY . .
 RUN npm run build
 
-CMD [ "npm", "start" ]
+# production stage
+FROM nginx:stable-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

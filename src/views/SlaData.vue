@@ -19,7 +19,11 @@
         </v-toolbar>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <SlaDataForm :item="item" ref="SlaDataFormRef" />
+        <SlaDataForm
+          :item="item"
+          :applications="applications"
+          ref="SlaDataFormRef"
+        />
       </template>
     </v-data-table>
   </v-container>
@@ -30,6 +34,7 @@ import event from "@/services/ApiCalls.js";
 import SlaDataForm from "@/components/SlaDataForm";
 export default {
   data: () => ({
+    applications: [],
     headers: [
       {
         text: "Id",
@@ -57,16 +62,19 @@ export default {
     ],
     slas: [],
   }),
+  components: { SlaDataForm },
   created() {
     this.init();
   },
-  components: { SlaDataForm },
   methods: {
     init() {
       event
         .get_sla_data()
         .then((response) => {
+          this.applications = response.data.data[0];
+          response.data.data.shift();
           this.slas = response.data.data;
+          // / this.slas.remove(0);
         })
         .catch((error) => {
           console.log(error);

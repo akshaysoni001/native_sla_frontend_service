@@ -8,6 +8,7 @@
               <v-col cols="12" sm="6">
                 <v-img
                   :aspect-ratio="1"
+                  class="img-circle"
                   src="https://i.ibb.co/8zR8C5Y/Akshay.jpg"
                 ></v-img
               ></v-col>
@@ -188,3 +189,8 @@ export default {
   }),
 };
 </script>
+<style scoped>
+.img-circle {
+  border-radius: 50%;
+}
+</style>

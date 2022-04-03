@@ -12,7 +12,9 @@
             <v-list-item-title>{{
               $store.state.user.user_name
             }}</v-list-item-title>
-            <v-list-item-subtitle>Logged In</v-list-item-subtitle>
+            <v-list-item-subtitle>{{
+              $store.state.user.account
+            }}</v-list-item-subtitle>
             <v-list-item-subtitle>Account</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
