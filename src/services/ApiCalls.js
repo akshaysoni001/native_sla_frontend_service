@@ -1,7 +1,7 @@
 import axios from "axios";
 import store from "@/store/index";
 const apiClient = axios.create({
-  baseURL: "http://localhost:5002/api",
+  baseURL: "https://nativesla.herokuapp.com/api",
   withCredentials: false,
   user: store.state.user,
   headers: {
