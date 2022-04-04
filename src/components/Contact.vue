@@ -60,11 +60,11 @@
               rules="required"
             >
               <v-select
-                v-model="formData.service"
+                v-model="formData.select"
                 :items="formData.services"
                 :error-messages="errors"
                 label="Service"
-                data-vv-name="service"
+                data-vv-name="select"
                 prepend-icon="menu"
                 required
               ></v-select>
@@ -157,20 +157,20 @@ export default {
         .post_feedback(this.formData)
         .then((response) => {
           this.message = response.data.message;
-          this.clear();
-          console.log("hello");
-          this.$emit("notification", response.data.message, "success");
+          this.$emit("notification", response.data);
         })
         .catch((error) => {
-          this.$emit("notification", error.message, "red");
+          this.$emit("notification", error.response.data);
         });
+
+      this.clear();
     },
     clear() {
       this.formData.name = "";
       this.formData.phoneNumber = "";
       this.formData.email = "";
       this.formData.select = null;
-      this.formData.textarea = "";
+      this.formData.message = "";
       this.$refs.observer.reset();
     },
   },

@@ -13,7 +13,9 @@ export default new Vuetify({
   theme: {
     themes: {
       dark: {
-        backgroud: "#EEEEEE",
+        background: "#EEEEEE",
+        primary: "pink",
+        color: "pink",
       },
     },
   },

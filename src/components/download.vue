@@ -19,6 +19,7 @@
                 :items="items"
                 :error-messages="errors"
                 label="SLA"
+                color="#49D9A0"
                 data-vv-name="items"
                 prepend-icon="menu"
                 required
@@ -27,6 +28,7 @@
               <v-col cols="12" lg="6">
                 <v-menu
                   v-model="menu1"
+                  color="#49D9A0"
                   :close-on-content-click="false"
                   max-width="290"
                 >
@@ -39,6 +41,7 @@
                       <v-text-field
                         :value="from_date"
                         label="From"
+                        color="#49D9A0"
                         prepend-icon="event"
                         readonly
                         :error-messages="errors"
@@ -50,6 +53,7 @@
                   </template>
                   <v-date-picker
                     v-model="fromDate"
+                    color="#49D9A0"
                     @change="menu1 = false"
                   ></v-date-picker>
                 </v-menu>
@@ -69,6 +73,7 @@
                       <v-text-field
                         :value="to_date"
                         label="To"
+                        color="#49D9A0"
                         prepend-icon="event"
                         readonly
                         :error-messages="errors"
@@ -80,6 +85,7 @@
                   </template>
                   <v-date-picker
                     v-model="toDate"
+                    color="#49D9A0"
                     @change="menu2 = false"
                   ></v-date-picker>
                 </v-menu>
@@ -88,12 +94,17 @@
             <validation-provider>
               <v-row>
                 <v-col cols="12" sm="6">
-                  <v-switch v-model="switch1" label="Download"></v-switch>
+                  <v-switch
+                    v-model="switch1"
+                    label="Download"
+                    color="#49D9A0"
+                  ></v-switch>
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-switch
                     v-model="switch2"
                     label="Need on mail"
+                    color="#49D9A0"
                   ></v-switch> </v-col></v-row
             ></validation-provider>
 
@@ -166,7 +177,6 @@ export default {
       .get_sla_headers()
       .then((response) => {
         this.items = response.data.data;
-        console.log(response.data.data);
       })
       .catch((error) => {
         console.log(error);

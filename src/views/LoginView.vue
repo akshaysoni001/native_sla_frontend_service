@@ -31,7 +31,7 @@
                               dense
                               :error-messages="errors"
                               required
-                              color="teal"
+                              color="#49D9A0"
                               autocomplete="false"
                               class="mt-16"
                             />
@@ -48,7 +48,7 @@
                               :error-messages="errors"
                               required
                               dense
-                              color="teal"
+                              color="#49D9A0"
                               autocomplete="false"
                               type="password"
                             />
@@ -62,6 +62,7 @@
                               >
                                 <v-select
                                   :items="accounts"
+                                  color="#49D9A0"
                                   v-model="user.account"
                                   :error-messages="errors"
                                   required
@@ -73,8 +74,8 @@
                           <v-row>
                             <v-col cols="12" sm="6">
                               <v-btn
-                                color="teal"
-                                dark
+                                color="#49D9A0"
+                                class="white--text"
                                 block
                                 tile
                                 type="submit"
@@ -84,7 +85,7 @@
                               >
                             </v-col>
                             <v-col cols="12" sm="6">
-                              <v-btn color="teal" text @click="dialog = true"
+                              <v-btn color="#49D9A0" text @click="dialog = true"
                                 >forgot password</v-btn
                               >
                             </v-col>
@@ -104,7 +105,10 @@
                   <v-card>
                     <v-card-title primary-title> Reset Password </v-card-title>
                     <v-card-text>
-                      <validation-observer ref="observer" v-slot="{ invalid }">
+                      <validation-observer
+                        ref="resetPassword"
+                        v-slot="{ invalid }"
+                      >
                         <v-row>
                           <v-col>
                             <validation-provider
@@ -124,7 +128,7 @@
                         </v-row>
                         <v-card-actions>
                           <v-spacer></v-spacer>
-                          <v-btn color="blue darken-1" text @click="close">
+                          <v-btn color="blue darken-1" text @click="clear">
                             Cancel
                           </v-btn>
                           <v-btn
@@ -227,7 +231,7 @@
                   </v-card>
                 </v-dialog>
 
-                <v-col cols="12" md="6" class="teal rounded-bl-xl">
+                <v-col cols="12" md="6" class="rounded-bl-xl teal">
                   <div style="text-align: center; padding: 180px 0">
                     <v-card-text class="white--text">
                       <h3 class="text-center">Don't Have an Account Yet?</h3>
@@ -302,7 +306,7 @@
                                   required
                                   outlined
                                   dense
-                                  color="teal"
+                                  color="#49D9A0"
                                   autocomplete="false"
                                   class="mt-4"
                                 />
@@ -323,7 +327,7 @@
                                   required
                                   outlined
                                   dense
-                                  color="teal"
+                                  color="#49D9A0"
                                   autocomplete="false"
                                 />
                               </validation-provider>
@@ -341,7 +345,7 @@
                                   required
                                   outlined
                                   dense
-                                  color="teal"
+                                  color="#49D9A0"
                                   autocomplete="false"
                                 />
                               </validation-provider>
@@ -359,13 +363,13 @@
                               required
                               outlined
                               dense
-                              color="teal"
+                              color="#49D9A0"
                               autocomplete="false"
                             />
                           </validation-provider>
                           <v-btn
-                            color="teal"
-                            dark
+                            color="#49D9A0"
+                            class="white--text"
                             block
                             tile
                             @click="SignUp"
@@ -383,7 +387,7 @@
                               <v-icon color="red">fab fa-google</v-icon>
                             </v-btn>
                             <v-btn depressed outlined color="grey">
-                              <v-icon color="teal">fab fa-facebook-f</v-icon>
+                              <v-icon color="#49D9A0">fab fa-facebook-f</v-icon>
                             </v-btn>
                             <v-btn depressed outlined color="grey">
                               <v-icon color="light-teal lighten-3"
@@ -462,7 +466,6 @@ export default {
       .get_init_data()
       .then((response) => {
         this.accounts = response.data.data[0]["all_account"];
-        console.log(this.accounts);
       })
       .catch((error) => {
         console.log(error);
@@ -482,11 +485,10 @@ export default {
           localStorage.setItem("token", response.data.data[0]);
           const token = response.data.data[0];
           const user = response.data.data[1];
-          console.log(user, token);
           this.setUser(user);
           this.setToken(token);
+          this.$refs.loginForm.reset();
           this.clear();
-          console.log(response.status);
           if (response.status === 201) {
             this.dialog1 = true;
           } else {
@@ -495,20 +497,21 @@ export default {
           }
         })
         .catch((error) => {
-          console.log("ERRRR", error);
-          this.$emit("notification", error, "info");
+          this.$refs.loginForm.reset();
+          this.$emit("notification", error.response.data);
         });
     },
     SignUp() {
       event
         .signup(this.signup)
         .then((response) => {
-          console.log(response.data);
-          this.$emit("notification", response.data.message, "success");
+          this.$emit("notification", response.data);
+          this.$refs.signUpForm.reset();
           this.clear();
         })
         .catch((error) => {
-          this.$emit("notification", error.message, "red");
+          this.$emit("notification", error.response.data);
+          this.$refs.signUpForm.reset();
           this.clear();
         });
     },
@@ -518,15 +521,14 @@ export default {
         .then((response) => {
           this.dialog = false;
           this.resetpassword.id = "";
-          console.log(response.data);
-          this.$emit("notification", response.data.message, "success");
+          this.$refs.resetPassword.reset();
+          this.$emit("notification", response.data);
         })
         .catch((error) => {
-          this.$emit("notification", error.message, "red");
+          this.$emit("notification", error.response.data);
         });
     },
     changePassword() {
-      console.log("Hello");
       event
         .changePassword(this.changepassword)
         .then((response) => {
@@ -534,11 +536,12 @@ export default {
           this.changepassword.old_password = "";
           this.changepassword.new_password = "";
           this.changepassword.confirm_password = "";
-          console.log(response.data);
-          this.$emit("notification", response.data.message, "success");
+          this.$refs.changePassword.reset();
+          this.$emit("notification", response.data);
         })
         .catch((error) => {
-          this.$emit("notification", error.message, "red");
+          this.$refs.changePassword.reset();
+          this.$emit("notification", error.response.data);
         });
     },
     clear() {
@@ -553,11 +556,8 @@ export default {
       this.changepassword.old_password = "";
       this.changepassword.new_password = "";
       this.changepassword.confirm_password = "";
-    },
-    close() {
-      this.$refs.signUpForm.reset();
-      this.$refs.changePassword.reset();
-      this.$refs.observer.reset();
+      //
+      //
     },
   },
 };

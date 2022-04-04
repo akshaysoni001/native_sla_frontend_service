@@ -16,7 +16,6 @@ export default {
     return apiClient.get("/login");
   },
   login(payload) {
-    console.log("loginpost", payload);
     return apiClient.post("/login", payload);
   },
   signup(payload) {
@@ -26,7 +25,6 @@ export default {
     return apiClient.post("/reset_password", payload);
   },
   changePassword(payload) {
-    console.log(payload, store.state.user);
     let user = store.state.user["user_id"];
     payload["user_id"] = user;
     return apiClient.post("/change_password", payload);
@@ -37,7 +35,6 @@ export default {
   },
   post_sla_request(payload) {
     payload["user"] = store.state.user;
-    console.log("API", payload);
     return apiClient.post("/raise_requests", payload);
   },
   get_request_data() {

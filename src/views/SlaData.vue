@@ -322,17 +322,16 @@ export default {
 
     save() {
       this.editedItem["request"] = this.request;
-      console.log("Data", this.editedItem);
       event
         .post_sla_request(this.editedItem)
         .then((response) => {
-          console.log(response);
           this.message = response.message;
           this.close();
-          this.$emit("notification", response.data.message, "success");
+
+          this.$emit("notification", response.data);
         })
         .catch((error) => {
-          this.$emit("notification", error.message, "red");
+          this.$emit("notification", error.response.data);
         });
       this.close();
       this.init();

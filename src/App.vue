@@ -13,9 +13,8 @@
           <v-icon class="pr-3" dark large>{{ snackbar.icon }}</v-icon>
           <v-layout column>
             <div>
-              <strong>{{ snackbar.title }}</strong>
+              <strong>{{ snackbar.text }}</strong>
             </div>
-            <div>{{ snackbar.text }}</div>
           </v-layout>
           <v-btn icon @click="snackbar.visible = false">
             <v-icon class="">clear</v-icon>
@@ -43,40 +42,53 @@ export default {
   data: () => ({
     isAuthenticated: false,
     snackbar: {
-      color: "info",
-      icon: "info",
+      color: "success",
+      icon: "check_circle",
       mode: "multi-line",
       position: "top",
       timeout: 2000,
-      title: "",
       text: "",
       visible: false,
     },
   }),
-  created() {},
+  created() {
+    this.clear();
+  },
   mounted() {
     if (localStorage.getItem("token") != null) {
       this.isAuthenticated = true;
     }
   },
   methods: {
+    delay(time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    },
     login(value) {
       this.isAuthenticated = value;
     },
-    logout(value, message, status) {
+    logout(value, message) {
       this.isAuthenticated = value;
-      this.snackbar.title = "Success";
-      this.snackbar.icon = "check_circle";
       this.snackbar.text = message;
-      this.snackbar.color = status;
       this.snackbar.visible = true;
     },
-    notification(message, status) {
-      console.log("Notification", message, status);
-      this.snackbar.text = message;
-      this.snackbar.title = status;
-      this.snackbar.color = status;
+    notification(response) {
+      if (response.success != true) {
+        this.snackbar.icon = "error";
+        this.snackbar.color = "error";
+      }
+      this.snackbar.text = response["message"];
       this.snackbar.visible = true;
+      this.delay(8000).then(() => this.clear());
+      // this.clear();
+    },
+    clear() {
+      this.snackbar.visible = false;
+      this.snackbar.color = "success";
+      this.snackbar.icon = "check_circle";
+      this.snackbar.mode = "multi-line";
+      this.snackbar.position = "top";
+      this.snackbar.timeout = 2000;
+      this.snackbar.text = "";
     },
   },
   components: { SideBar, TopHeader, LoginView },
